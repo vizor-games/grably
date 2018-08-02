@@ -1,0 +1,68 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    ast (2.4.0)
+    colorize (0.8.1)
+    diff-lcs (1.3)
+    docile (1.1.5)
+    fakefs (0.10.0)
+    jac (0.0.3)
+    json (2.1.0)
+    parallel (1.12.1)
+    parser (2.5.1.2)
+      ast (~> 2.4.0)
+    power_assert (1.1.1)
+    powerpack (0.1.1)
+    rainbow (2.2.2)
+      rake
+    rake (12.3.1)
+    redcarpet (3.4.0)
+    rspec (3.5.0)
+      rspec-core (~> 3.5.0)
+      rspec-expectations (~> 3.5.0)
+      rspec-mocks (~> 3.5.0)
+    rspec-core (3.5.4)
+      rspec-support (~> 3.5.0)
+    rspec-expectations (3.5.0)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.5.0)
+    rspec-mocks (3.5.0)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.5.0)
+    rspec-support (3.5.0)
+    rubocop (0.50.0)
+      parallel (~> 1.10)
+      parser (>= 2.3.3.1, < 3.0)
+      powerpack (~> 0.1)
+      rainbow (>= 2.2.2, < 3.0)
+      ruby-progressbar (~> 1.7)
+      unicode-display_width (~> 1.0, >= 1.0.1)
+    ruby-progressbar (1.9.0)
+    simplecov (0.15.1)
+      docile (~> 1.1.0)
+      json (>= 1.8, < 3)
+      simplecov-html (~> 0.10.0)
+    simplecov-html (0.10.2)
+    test-unit (3.2.7)
+      power_assert
+    unicode-display_width (1.4.0)
+    yard (0.9.5)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  colorize (= 0.8.1)
+  fakefs (= 0.10.0)
+  jac (= 0.0.3)
+  powerpack (= 0.1.1)
+  rake
+  redcarpet (= 3.4.0)
+  rspec (= 3.5.0)
+  rubocop (~> 0.50.0)
+  simplecov (= 0.15.1)
+  test-unit
+  yard (= 0.9.5)
+
+BUNDLED WITH
+   1.16.1

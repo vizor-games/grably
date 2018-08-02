@@ -1,0 +1,45 @@
+Style/AsciiComments:
+  Enabled: false
+
+Metrics/LineLength:
+  Max: 120
+
+Metrics/BlockLength:
+  Exclude:
+    - 'Rakefile'
+    - '**/*.rake'
+    - 'test/**/*.rb'
+    - 'spec/**/*.rb'
+
+Style/HashSyntax:
+  Exclude:
+    # for task :foo => :bar definitions
+    - '**/Rakefile'
+    - '**/*.rake'
+    - '**/*.rake.rb'
+
+Style/PercentLiteralDelimiters:
+  # Specify the default preferred delimiter for all types with the 'default' key
+  # Override individual delimiters (even with default specified) by specifying
+  # an individual key
+  PreferredDelimiters:
+    default: ()
+    '%i': '()'
+    '%I': '()'
+    '%r': '{}'
+    '%w': '()'
+    '%W': '()'
+
+Security/MarshalLoad:
+  Exclude:
+    - 'lib/grably/core/job.rb'
+
+# bug in rubocop style checker
+Lint/InterpolationCheck:
+  Exclude:
+    - 'spec/grably/core/configuration_spec.rb'
+
+Eval:
+  Exclude:
+    # Allow eval for configuration values evaluation
+    - 'lib/grably/core/configuration.rb'

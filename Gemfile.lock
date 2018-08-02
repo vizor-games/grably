@@ -46,7 +46,7 @@ GEM
     test-unit (3.2.7)
       power_assert
     unicode-display_width (1.4.0)
-    yard (0.9.5)
+    yard (0.9.15)
 
 PLATFORMS
   ruby
@@ -62,7 +62,7 @@ DEPENDENCIES
   rubocop (~> 0.50.0)
   simplecov (= 0.15.1)
   test-unit
-  yard (= 0.9.5)
+  yard (~> 0.9.5)
 
 BUNDLED WITH
    1.16.1

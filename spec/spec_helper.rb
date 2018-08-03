@@ -3,11 +3,13 @@ require 'tmpdir'
 require 'powerpack/string'
 require 'simplecov'
 
-SimpleCov.start
-
 def lib(path)
   File.join(__dir__, '..', 'lib', path)
 end
+
+require_relative 'helpers'
+
+SimpleCov.start
 
 module Rake
   class Application
@@ -19,3 +21,7 @@ end
 
 require_relative lib('grably/core')
 include Grably
+
+RSpec.configure do |c|
+  c.include Helpers
+end

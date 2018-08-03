@@ -52,41 +52,41 @@ module Grably
       end
     end
 
-    # Given two lists of product digests
-    # find missing, changed, and added products
-    # @return [deleted, added, updated]
-    def diff_digests(old_products, new_products)
-      # create maps of product sets
-      old_map, new_map = [old_products, new_products].map do |products|
-        return [] unless products
-        Hash[*products.flat_map { |d| [d.product, d] }]
-      end
-
-      build_diff(new_map, old_map)
-    end
-
-    def build_diff(new_map, old_map)
-      old_keys = old_map.keys.to_set
-      new_keys = new_map.keys.to_set
-
-      missing = old_keys - new_keys
-      added = new_keys - old_keys
-
-      updated = (old_keys & new_keys).reject do |product|
-        old_map[product] == new_map[product]
-      end
-
-      [missing, added, updated]
-    end
-
-    # Tells if two product digest lists are differ
-    def differ?(old_products, new_products)
-      !diff_digests(old_products, new_products).flatten.empty?
-    end
-
     class << self
       def digest(*products)
         products.map { |product| ProductDigest.of_product(product) }
+      end
+
+      # Given two lists of product digests
+      # find missing, changed, and added products
+      # @return [deleted, added, updated]
+      def diff_digests(old_products, new_products)
+        # create maps of product sets
+        old_map, new_map = [old_products, new_products].map do |products|
+          return [] unless products
+          Hash[*products.flat_map { |d| [d.product, d] }]
+        end
+
+        build_diff(new_map, old_map)
+      end
+
+      def build_diff(new_map, old_map)
+        old_keys = old_map.keys.to_set
+        new_keys = new_map.keys.to_set
+
+        missing = old_keys - new_keys
+        added = new_keys - old_keys
+
+        updated = (old_keys & new_keys).reject do |product|
+          old_map[product] == new_map[product]
+        end
+
+        [missing, added, updated]
+      end
+
+      # Tells if two product digest lists are differ
+      def differ?(old_products, new_products)
+        !diff_digests(old_products, new_products).flatten.empty?
       end
     end
   end

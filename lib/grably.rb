@@ -33,7 +33,7 @@ module Grably
     def init
       profile = (ENV[ENV_PROFILE_KEY] || 'default').split(',')
       puts 'Loding profile ' + profile.join('/')
-      @config = Grably::Core::Configuration.load(ENV[ENV_PROFILE_KEY] || [])
+      @config = Grably::Core::Configuration.load(profile)
     end
 
     def server

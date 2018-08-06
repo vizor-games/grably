@@ -31,7 +31,7 @@ module Grably
   class << self
     attr_reader :config
     def init
-      profile = ENV['ENV_PROFILE_KEY'] || %w(default)
+      profile = (ENV[ENV_PROFILE_KEY] || 'default').split(',')
       puts 'Loding profile ' + profile.join('/')
       @config = Grably::Core::Configuration.load(ENV[ENV_PROFILE_KEY] || [])
     end

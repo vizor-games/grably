@@ -2,6 +2,7 @@ require 'rspec/core/rake_task'
 require 'rubocop/rake_task'
 require 'rake/testtask'
 require 'yard'
+
 # Will use base grably module
 require_relative 'lib/grably'
 
@@ -41,5 +42,3 @@ namespace :deps do
     run %w(bundle)
   end
 end
-
-grab Grably['.', :doc].with_profile(:default, :test), as: :remote_doc

@@ -172,5 +172,21 @@ describe Configuration do
     after(:all) do
       FileUtils.remove_entry(@working_dir)
     end
+
+    context 'when env contains BIN_CONFIG value' do
+      before(:all) do
+        @old_env = ENV[Configuration::ENV_BINCONFIG_KEY]
+        ENV[Configuration::ENV_BINCONFIG_KEY] = '6275696c645f6f776e65723a206b72757473696b61752e616c6568'
+      end
+
+      it do
+        c = Configuration.load(profile: %w(default), dir: @working_dir)
+        expect(c.build_owner).to eq('krutsikau.aleh')
+      end
+
+      after(:all) do
+        ENV[Configuration::ENV_BINCONFIG_KEY] = @old_env
+      end
+    end
   end
 end

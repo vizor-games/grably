@@ -40,14 +40,13 @@ module Grably
         # @return [OpenStruct] resolved profile values
         def load(dir: nil, profile: [])
           profile += (ENV[ENV_PROFILE_KEY] || 'default').split(',')
-          puts 'Loding profile ' + profile.join('/')
           read(profile, *load_configuration_streams(dir))
         end
 
         def load_configuration_streams(dir)
           # Read all known files
           streams = CONFIGURATION_FILES
-                    .map { |f| [dir ? File.join(Dir.pwd, f) : f, f] }
+                    .map { |f| [dir ? File.join(dir, f) : f, f] }
                     .select { |path, _name| File.exist?(path) }
                     .map { |path, name| [IO.read(path), name] }
 

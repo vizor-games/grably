@@ -2,6 +2,8 @@ require 'yaml'
 require 'ostruct'
 require 'jac'
 
+require_relative 'configuration/pretty_print'
+
 module Grably
   module Core
     # Grably configuration module.
@@ -27,7 +29,9 @@ module Grably
         # @param [String] dir base directory path for provided files may be nil
         # @return [OpenStruct] resolved profile values
         def load(profile, dir: nil)
-          Jac::Configuration.load(profile, files: CONFIGURATION_FILES, dir: dir)
+          obj = Jac::Configuration.load(profile, files: CONFIGURATION_FILES, dir: dir)
+          obj.extend(self)
+          obj
         end
       end
     end

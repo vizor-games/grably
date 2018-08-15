@@ -4,6 +4,7 @@ gem 'colorize', '0.8.1'
 gem 'jac', '0.0.4'
 gem 'powerpack', '0.1.1'
 gem 'rake'
+gem 'thor'
 
 group :dev do
   gem 'fakefs', '0.10.0'

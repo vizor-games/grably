@@ -1,7 +1,7 @@
 module Grably # :nodoc:
   class << self
     # Current grably version identifier
-    VERSION = [0, 0, 2].freeze
+    VERSION = [0, 0, 3].freeze
 
     # Returns grably version string
     # @return [String] version string

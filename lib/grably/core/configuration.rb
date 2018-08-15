@@ -10,6 +10,11 @@ module Grably
     # We use jac for configuration
     # @see https://github.com/vizor-games/jac
     module Configuration
+      # Key where required profile is placed.
+      # To load grably with profile `foo,bar` one need to
+      # run `rake mp=foo,bar task1, task2, ... taskN`
+      ENV_PROFILE_KEY = 'mp'.freeze
+
       # Default configuration file names
       CONFIGURATION_FILES = %w(grably.yml grably.user.yml grably.override.yml).freeze
 
@@ -28,7 +33,9 @@ module Grably
         # @praram [String or Array] profile which should be loaded
         # @param [String] dir base directory path for provided files may be nil
         # @return [OpenStruct] resolved profile values
-        def load(profile, dir: nil)
+        def load(dir: nil, profile: [])
+          profile += (ENV[ENV_PROFILE_KEY] || 'default').split(',')
+          puts 'Loding profile ' + profile.join('/')
           obj = Jac::Configuration.load(profile, files: CONFIGURATION_FILES, dir: dir)
           obj.extend(self)
           obj

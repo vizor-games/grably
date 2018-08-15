@@ -14,11 +14,6 @@ module Grably
                   '/_/   \____/_/   \__,_/_.___/_/\__, (_)   |' \
                   '                              /____/      |'.tr('|', "\n")
 
-  # Key where required profile is placed.
-  # To load grably with profile `foo,bar` one need to
-  # run `rake mp=foo,bar task1, task2, ... taskN`
-  ENV_PROFILE_KEY = 'mp'.freeze
-
   def config
     Grably.config
   end
@@ -31,9 +26,7 @@ module Grably
   class << self
     attr_reader :config
     def init
-      profile = (ENV[ENV_PROFILE_KEY] || 'default').split(',')
-      puts 'Loding profile ' + profile.join('/')
-      @config = Grably::Core::Configuration.load(profile)
+      @config = Grably::Core::Configuration.load
     end
 
     def server

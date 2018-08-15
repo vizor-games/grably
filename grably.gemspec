@@ -17,7 +17,7 @@ Gem::Specification.new do |s|
 
   s.add_runtime_dependency 'colorize', '~> 0.8.1'
   s.add_runtime_dependency 'jac', '~> 0.0.3'
-  s.add_runtime_dependency 'powerpack', '~> 0.1.1'
-  s.add_runtime_dependency 'rake', '~> 0'
+  s.add_runtime_dependency 'powerpack', '~> 0.1.0'
+  s.add_runtime_dependency 'rake', '~> 12.0'
   s.add_runtime_dependency 'thor', '~> 0'
 end

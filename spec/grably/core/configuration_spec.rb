@@ -159,7 +159,9 @@ describe Configuration do
       end
     end
 
-    let(:config) { Configuration.load(%w(foo), dir: @working_dir) }
+    let(:config) do
+      Configuration.load(profile: %w(foo), dir: @working_dir)
+    end
 
     it 'creates configuration object for requested profile' do
       expect(config.bar).to eq(1)

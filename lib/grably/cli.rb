@@ -3,7 +3,7 @@ require 'rake'
 require 'yaml'
 
 require_relative 'version'
-
+require_relative 'core/configuration'
 module Grably
   # Grably CLI tool. Gives access to basic grably commands. Allowing to fetch
   # basic infromation about build configuration, grably version and much more
@@ -12,8 +12,8 @@ module Grably
     map %w(--version -v) => :version
     map %w(x) => :exec
 
-    desc 'exec ...TASKS', 'Execute build tasks'
     option :profile, type: :string, default: 'default', aliases: :'-p', banner: '<profile>'
+    desc 'exec ...TASKS', 'Execute build tasks'
     def exec(*tasks)
       Rake.application.run(tasks + ["mp=#{options[:profile]}"])
     end
@@ -26,11 +26,11 @@ module Grably
       Rake.application.run(args)
     end
 
+    option :profile, type: :string, aliases: :'-p', banner: '<profile>'
     desc 'config', 'Pretty print current configuration'
-    option :profile, type: :string, default: 'default', aliases: :'-p', banner: '<profile>'
     def config
       app = Rake.application
-      app.init
+      ENV[Grably::ENV_PROFILE_KEY] = options[:profile]
       app.load_rakefile
       Grably.config.pretty_print
     end

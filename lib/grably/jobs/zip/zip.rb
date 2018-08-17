@@ -31,9 +31,7 @@ module Grably # :nodoc:
     end
 
     def zip(dir)
-      Dir.chdir(dir) do
-        ['zip', cflags, File.join('..', File.basename(dst)), '.'].run
-      end
+      ['zip', cflags, File.join('..', File.basename(dst)), '.'].run(chdir: dir)
       Product.new(job_dir(File.basename(dst)), dst, meta)
     end
 

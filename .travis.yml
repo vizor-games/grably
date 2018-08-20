@@ -1,0 +1,15 @@
+language: ruby
+dist: trusty
+rvm:
+  - 2.4.0
+  - 2.5.0
+  - ruby-head
+  - jruby-head
+jdk:
+  - openjdk8
+  - openjdk9
+  - oraclejdk8
+  - oraclejdk9
+branches:
+  only:
+    - master # Build only mster branch and pull requests

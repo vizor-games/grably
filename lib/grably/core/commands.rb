@@ -16,10 +16,6 @@ module Grably # :nodoc:
   end
 
   def relative_path(base, path)
-    # TODO: Reimplement
-    Dir.chdir(base) do
-      path = File.expand_path(path)
-    end
-    path
+    File.expand_path(path, base)
   end
 end

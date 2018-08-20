@@ -35,7 +35,7 @@ matrix:
       jdk: oraclejdk8
 
   allow_failures:
-    - jruby-head
+    - rvm: jruby-head
 
 branches:
   only:

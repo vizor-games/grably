@@ -26,7 +26,7 @@ module Grably
 
       if Grably.export_path
         data = [ rakefile, out_file, { 'target' => call.task, 'profile' => profile, 'params' => params } ]
-        puts "remote_mbuild_request:#{JSON.generate(data)}"
+        puts "remote_grably_request:#{JSON.generate(data)}"
         $stdout.flush
         $stdin.each do |l|
           raise "error in remote (slave) grably" unless l.strip == 'remote_grab_finished'

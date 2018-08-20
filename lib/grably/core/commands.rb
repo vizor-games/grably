@@ -1,8 +1,10 @@
 require 'fileutils'
 require 'digest/sha1'
+require 'English'
 
 require_relative 'commands/digest'
 require_relative 'commands/cp'
+require_relative 'commands/ln'
 require_relative 'commands/log'
 require_relative 'commands/run'
 require_relative 'commands/serialize'

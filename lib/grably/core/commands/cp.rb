@@ -34,7 +34,7 @@ module Grably # :nodoc:
 
     # Looking for missing files
     remove_files = (dst_products.keys - src_products.keys).each do |dst_key|
-      log "Remove #{dst_key} (#{dst_products[dst_key].src}" if log
+      log_msg "Remove #{dst_key} (#{dst_products[dst_key].src}" if log
     end
     FileUtils.rm(remove_files.map { |k| dst_products[k].src })
     rm_empty_dirs(dst_dir)
@@ -49,7 +49,7 @@ module Grably # :nodoc:
   def cp_sys(src, dst, log: false)
     src = src.src if src.is_a?(Product)
     dst = dst.src if dst.is_a?(Product)
-    log "Copy #{File.basename(src)} to #{dst}" if log
+    log_msg "Copy #{File.basename(src)} to #{dst}" if log
     FileUtils.cp_r(src, dst)
   end
 
@@ -69,7 +69,7 @@ module Grably # :nodoc:
 
     dir = File.dirname(copy.dst)
     FileUtils.mkdir_p(dir) unless File.exist?(dir)
-    log "Copy #{File.basename(product.src)} to #{copy.src}" if log
+    log_msg "Copy #{File.basename(product.src)} to #{copy.src}" if log
     FileUtils.cp(product.src, copy.src)
 
     copy
@@ -80,7 +80,7 @@ module Grably # :nodoc:
       # Check if file changed. If so updating it
       # TODO: Should we or should not check hashsum
       if product_changed?(src_product, dst_product)
-        log "Update #{src_product.basename} to #{dst_product.src}" if log
+        log_msg "Update #{src_product.basename} to #{dst_product.src}" if log
         FileUtils.cp(src_product.src, dst_product.src)
       end
     else
@@ -89,15 +89,15 @@ module Grably # :nodoc:
       end
       dir = File.dirname(dst_product.src)
       FileUtils.mkdir_p(dir) unless File.exist?(dir)
-      log "Copy #{src_product.basename} to #{dst_product.src}" if log
+      log_msg "Copy #{src_product.basename} to #{dst_product.src}" if log
       FileUtils.cp(src_product.src, dst_product.src)
     end
 
     dst_product
   end
 
-  def product_changed?(p1, p2)
+  def product_changed?(left, right)
     # TODO: Should we or should not check hashsums of files?
-    digest(p1) != digest(p2) if File.mtime(p1.src) != File.mtime(p2.src)
+    digest(left) != digest(right) if File.mtime(left.src) != File.mtime(right.src)
   end
 end

@@ -42,7 +42,7 @@ module Grably
         product = Product.new(product) if product.is_a?(String)
         raise 'Expected string or Product got ' + product.inspect unless product.is_a? Product
         src = product.src
-        raise 'File does not exist' unless File.exist? src
+        raise "File '#{src}' does not exist" unless File.exist? src
         ProductDigest.new(
           product,
           mtime: File.mtime(src),

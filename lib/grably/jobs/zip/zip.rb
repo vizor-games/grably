@@ -23,7 +23,7 @@ module Grably # :nodoc:
         return []
       end
 
-      log "Zipping #{files.size} files into #{File.basename(dst)}"
+      log_msg "Zipping #{files.size} files into #{File.basename(dst)}"
 
       src_dir = job_dir('src')
       ln(files, src_dir)
@@ -31,7 +31,7 @@ module Grably # :nodoc:
     end
 
     def zip(dir)
-      ['zip', cflags, File.join('..', File.basename(dst)), '.'].run(chdir: dir)
+      ['zip', '-r', cflags, File.join('..', File.basename(dst)), '.'].run_log(chdir: dir)
       Product.new(job_dir(File.basename(dst)), dst, meta)
     end
 

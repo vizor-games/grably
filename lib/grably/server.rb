@@ -71,7 +71,7 @@ module Grably
             execute(data[0], data[1], "#{prefix}  ", { target: data[2]['target'], profile: data[2]['profile'], params: data[2]['params']})
             process[:stdin].puts('remote_grab_finished')
           else
-            log "#{prefix}#{l}"
+            log_msg "#{prefix}#{l}"
           end
         end
         

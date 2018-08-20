@@ -7,11 +7,11 @@ module Grably
 
         if changed?
           clean unless incremental?
-          log "  * [#{self.class.job_call_name}] building"
+          log_msg "  * [#{self.class.job_call_name}] building"
           result = @manifest.result = Grably::Core::Product.expand(build)
           @manifest.dump
         else
-          log "  * [#{self.class.job_call_name}] uptodate"
+          log_msg "  * [#{self.class.job_call_name}] uptodate"
           result = @manifest.result
         end
 

@@ -66,7 +66,7 @@ module Grably # :nodoc:
         warn 'Nothing to sync' if files.empty?
       end
 
-      log "Syncing #{files.size} files to #{host}"
+      log_msg "Syncing #{files.size} files to #{host}"
       ['rsync', *rsync_params, @dst, '-e', ssh_cmd, host].run_log
     end
 

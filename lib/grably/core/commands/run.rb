@@ -21,7 +21,7 @@ end
 module Grably # :nodoc:
   class << self
     def run_log(cmd, opts)
-      run(cmd, opts) { |l| log "  #{l}" }
+      run(cmd, opts) { |l| log_msg "  #{l}" }
     end
 
     def run_safe(cmd, opts)
@@ -53,10 +53,9 @@ module Grably # :nodoc:
       # Store last command. env and cmd flipped, because usualy we more
       # interested in command instead of environment
       Grably.last_command = [cmd, env]
-
-      lines = Open3.popen3(env, cmd, opts) do |_stdin, stdout, _stderr, _thr|
+      lines = Open3.popen3(env, *cmd, opts) do |_stdin, stdout, _stderr, _thr|
         stdout.sync = true
-        stdout.each { yield(l) if block_given? }
+        stdout.each { |l| yield(l) if block_given? }
       end
 
       return if $CHILD_STATUS.exitstatus.zero?
@@ -64,6 +63,12 @@ module Grably # :nodoc:
       # CI piplines and one can use error message.
       Grably.last_error = [$CHILD_STATUS.exitstatus, lines]
       raise 'error: '.red.bright + cmd.red + "\nfail log: #{lines}".green
+    end
+
+    attr_reader :last_command
+
+    def last_command=(cmd)
+      @last_command = cmd.dup.freeze
     end
 
     private

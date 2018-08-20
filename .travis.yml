@@ -10,27 +10,32 @@ jdk:
   - openjdk9
   - oraclejdk8
   - oraclejdk9
-exclude:
-  - rvm: 2.4.0
-    jdk: openjdk8
-  - rvm: 2.4.0
-    jdk: openjdk9
-  - rvm: 2.4.0
-    jdk: oraclejdk8
 
-  - rvm: 2.5.0
-    jdk: openjdk8
-  - rvm: 2.5.0
-    jdk: openjdk9
-  - rvm: 2.5.0
-    jdk: oraclejdk8
+matrix: 
+  exclude:
+    - rvm: 2.4.0
+      jdk: openjdk8
+    - rvm: 2.4.0
+      jdk: openjdk9
+    - rvm: 2.4.0
+      jdk: oraclejdk8
 
-  - rvm: ruby-head
-    jdk: openjdk8
-  - rvm: ruby-head
-    jdk: openjdk9
-  - rvm: ruby-head
-    jdk: oraclejdk8
+    - rvm: 2.5.0
+      jdk: openjdk8
+    - rvm: 2.5.0
+      jdk: openjdk9
+    - rvm: 2.5.0
+      jdk: oraclejdk8
+
+    - rvm: ruby-head
+      jdk: openjdk8
+    - rvm: ruby-head
+      jdk: openjdk9
+    - rvm: ruby-head
+      jdk: oraclejdk8
+
+  allow_failures:
+    - jruby-head
 
 branches:
   only:

@@ -5,6 +5,7 @@ gem 'jac', '0.0.4'
 gem 'powerpack', '~> 0.1'
 gem 'rake', '~> 12.0'
 gem 'thor'
+gem 'rubyzip', '~> 1.2.1'
 
 group :dev do
   gem 'fakefs', '0.10.0'

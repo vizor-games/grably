@@ -20,4 +20,5 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'powerpack', '~> 0.1.0'
   s.add_runtime_dependency 'rake', '~> 12.0'
   s.add_runtime_dependency 'thor', '~> 0'
+  s.add_runtime_dependency 'rubyzip', '~> 1.2.1'
 end

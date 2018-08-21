@@ -1,6 +1,7 @@
 require 'powerpack/string/format' # Adds format method
 require 'powerpack/string/remove_prefix'
 require_relative 'task'
+require_relative 'product/file_ext'
 
 module Grably
   module Core
@@ -228,6 +229,7 @@ module Grably
     # It describes real file with virtual destination.
     # Product instances should be immutable.
     class Product
+      include Grably::ProductFileExtensions
       attr_reader :src, :dst, :meta
 
       def initialize(src, dst = nil, meta = {})

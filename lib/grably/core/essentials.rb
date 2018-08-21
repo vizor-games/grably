@@ -12,7 +12,7 @@ module Grably # :nodoc:
                :linux
              end
   # Number of CPU cores
-  CORES_NUMER = case PLATFORM
+  CORES_NUMBER = case PLATFORM
                 when :windows
                   # this works for windows 2000 or greater
                   require 'win32ole'

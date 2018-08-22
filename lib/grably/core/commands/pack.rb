@@ -89,18 +89,17 @@ module Grably # :nodoc:
         dest ||= File.join(dst_dir, entry.full_name)
 
         if entry.directory? || (entry.header.typeflag == '' && entry.full_name.end_with?('/'))
-          raise "file already exist: #{dest}" if File.exist?(dest)
           # FileUtils.mkdir_p(dest, :mode => entry.header.mode, :verbose => false)
-          FileUtils.mkdir_p(dest, verbose: false)
+          FileUtils.mkdir_p(dest, verbose: false) unless File.exist?(dest)
         elsif entry.file? || (entry.header.typeflag == '' && !entry.full_name.end_with?('/'))
-          raise "file already exist: #{dest}" if File.exist?(dest)
+          unless File.exist?(dest)
+            FileUtils.mkdir_p(File.dirname(dest))
 
-          FileUtils.mkdir_p(File.dirname(dest))
-
-          File.open(dest, 'wb') do |f|
-            f.print(entry.read)
+            File.open(dest, 'wb') do |f|
+              f.print(entry.read)
+            end
+            # FileUtils.chmod(entry.header.mode, dest, :verbose => false)
           end
-          # FileUtils.chmod(entry.header.mode, dest, :verbose => false)
         elsif entry.header.typeflag == '2' # Symlink!
           File.symlink(entry.header.linkname, dest)
         else

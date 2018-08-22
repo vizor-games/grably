@@ -8,51 +8,51 @@ include Grably
 class TestPack < TestCase
   def test_zip # rubocop:disable Metrics/MethodLength:
     test_pack do
-      pack('test', 'tmp/test.zip', :zip)
-      unpack('tmp/test.zip', 'tmp/dst', :zip)
+      pack('test', 'tmp/test.zip', type: :zip)
+      unpack('tmp/test.zip', 'tmp/dst', type: :zip)
     end
 
     test_pack do
       ['zip', '-r', '../test.zip', '.'].run(chdir: 'tmp/src')
-      unpack('tmp/test.zip', 'tmp/dst', :zip)
+      unpack('tmp/test.zip', 'tmp/dst', type: :zip)
     end
 
     test_pack do
-      pack('test', 'tmp/test.zip', :zip)
+      pack('test', 'tmp/test.zip', type: :zip)
       ['unzip', '../test.zip'].run(chdir: 'tmp/dst')
     end
   end
 
   def test_tar # rubocop:disable Metrics/MethodLength:
     test_pack do
-      pack('test', 'tmp/test.tar', :tar)
-      unpack('tmp/test.tar', 'tmp/dst', :tar)
+      pack('test', 'tmp/test.tar', type: :tar)
+      unpack('tmp/test.tar', 'tmp/dst', type: :tar)
     end
 
     test_pack do
       ['tar', '-cf', '../test.tar', '.'].run(chdir: 'tmp/src')
-      unpack('tmp/test.tar', 'tmp/dst', :tar)
+      unpack('tmp/test.tar', 'tmp/dst', type: :tar)
     end
 
     test_pack do
-      pack('test', 'tmp/test.tar', :tar)
+      pack('test', 'tmp/test.tar', type: :tar)
       ['tar', '-xf', '../test.tar'].run(chdir: 'tmp/dst')
     end
   end
 
   def test_tar_gz # rubocop:disable Metrics/MethodLength:
     test_pack do
-      pack('test', 'tmp/test.tar.gz', :tar_gz)
-      unpack('tmp/test.tar.gz', 'tmp/dst', :tar_gz)
+      pack('test', 'tmp/test.tar.gz', type: :tar_gz)
+      unpack('tmp/test.tar.gz', 'tmp/dst', type: :tar_gz)
     end
 
     test_pack do
       ['tar', '-czf', '../test.tar.gz', '.'].run(chdir: 'tmp/src')
-      unpack('tmp/test.tar.gz', 'tmp/dst', :tar_gz)
+      unpack('tmp/test.tar.gz', 'tmp/dst', type: :tar_gz)
     end
 
     test_pack do
-      pack('test', 'tmp/test.tar.gz', :tar_gz)
+      pack('test', 'tmp/test.tar.gz', type: :tar_gz)
       ['tar', '-xzf', '../test.tar.gz'].run(chdir: 'tmp/dst')
     end
   end

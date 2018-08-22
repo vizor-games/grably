@@ -78,8 +78,8 @@ class TestPack < TestCase
   end
 
   def compare # rubocop:disable all
-    files_src = Dir.glob('**/*', base: 'tmp/src').sort
-    files_dst = Dir.glob('**/*', base: 'tmp/dst').sort
+    files_src = Dir.glob_base('**/*', 'tmp/src').sort
+    files_dst = Dir.glob_base('**/*', 'tmp/dst').sort
     assert_equal(files_src, files_dst)
 
     files_src.each do |f|

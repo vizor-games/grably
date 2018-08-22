@@ -67,7 +67,7 @@ module Grably # :nodoc:
       File.join(dst_dir, dst)
     end
 
-    dir = File.dirname(copy.dst)
+    dir = File.dirname(copy.src)
     FileUtils.mkdir_p(dir) unless File.exist?(dir)
     log_msg "Copy #{File.basename(product.src)} to #{copy.src}" if log
     FileUtils.cp(product.src, copy.src)

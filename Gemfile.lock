@@ -38,6 +38,7 @@ GEM
       ruby-progressbar (~> 1.7)
       unicode-display_width (~> 1.0, >= 1.0.1)
     ruby-progressbar (1.10.0)
+    rubyzip (1.2.1)
     simplecov (0.15.1)
       docile (~> 1.1.0)
       json (>= 1.8, < 3)
@@ -61,10 +62,11 @@ DEPENDENCIES
   redcarpet (= 3.4.0)
   rspec (= 3.5.0)
   rubocop (~> 0.50.0)
+  rubyzip (~> 1.2.1)
   simplecov (= 0.15.1)
   test-unit
   thor
   yard (~> 0.9.5)
 
 BUNDLED WITH
-   1.16.1
+   1.16.3

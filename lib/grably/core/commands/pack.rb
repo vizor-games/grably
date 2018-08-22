@@ -9,7 +9,7 @@ module Grably # :nodoc:
   # @param dst [String] archive name
   # @param type [Symbol] archive type (one of :zip, :tar, :tar_gz).
   #   Archive type will be autodetected in case of nil
-  def pack(products, dst, type = nil)
+  def pack(products, dst, type = nil) # rubocop:disable Metrics/MethodLength
     products = Product.expand(products)
 
     type = autodetect_archive_type(dst) if type.nil?
@@ -34,7 +34,7 @@ module Grably # :nodoc:
   # @param dst_dir [String] destination directory
   # @param type [Symbol] archive type (one of :zip, :tar, :tar_gz).
   #   Archive type will be autodetected in case of nil
-  def unpack(src, dst_dir, type = nil)
+  def unpack(src, dst_dir, type = nil) # rubocop:disable Metrics/MethodLength
     type = autodetect_archive_type(src) if type.nil?
 
     if type == :zip
@@ -75,9 +75,9 @@ module Grably # :nodoc:
     end
   end
 
-  TAR_LONGLINK = '././@LongLink'
+  TAR_LONGLINK = '././@LongLink'.freeze
 
-  def unpack_tar(stream, dst_dir)
+  def unpack_tar(stream, dst_dir) # rubocop:disable all
     Gem::Package::TarReader.new(stream) do |tar|
       dest = nil
       tar.each do |entry|
@@ -90,18 +90,18 @@ module Grably # :nodoc:
 
         if entry.directory? || (entry.header.typeflag == '' && entry.full_name.end_with?('/'))
           raise "file already exist: #{dest}" if File.exist?(dest)
-          #FileUtils.mkdir_p(dest, :mode => entry.header.mode, :verbose => false)
-          FileUtils.mkdir_p(dest, :verbose => false)
+          # FileUtils.mkdir_p(dest, :mode => entry.header.mode, :verbose => false)
+          FileUtils.mkdir_p(dest, verbose: false)
         elsif entry.file? || (entry.header.typeflag == '' && !entry.full_name.end_with?('/'))
           raise "file already exist: #{dest}" if File.exist?(dest)
 
           FileUtils.mkdir_p(File.dirname(dest))
 
-          File.open(dest, "wb") do |f|
+          File.open(dest, 'wb') do |f|
             f.print(entry.read)
           end
           # FileUtils.chmod(entry.header.mode, dest, :verbose => false)
-        elsif entry.header.typeflag == '2' #Symlink!
+        elsif entry.header.typeflag == '2' # Symlink!
           File.symlink(entry.header.linkname, dest)
         else
           raise "unknown tar entry: #{entry.full_name} type: #{entry.header.typeflag}"
@@ -125,9 +125,9 @@ module Grably # :nodoc:
   end
 
   def autodetect_archive_type(src)
-    return :zip if src.end_with?('.zip') || src.end_with?('.jar')
+    return :zip if src.end_with?('.zip', '.jar')
     return :tar if src.end_with?('.tar')
-    return :tar_gz if src.end_with?('.tar.gz') || src.end_with?('.tgz')
+    return :tar_gz if src.end_with?('.tar.gz', '.tgz')
     raise "error detecting archive type for: #{src}"
   end
 end

@@ -59,15 +59,12 @@ module Grably # :nodoc:
     module_function
 
     def pack_zip(products, dst, level = nil)
-      # Probably it's not really good idea to use global option here
-      level = Zlib::DEFAULT_COMPRESSION if level.nil?
-      Zip.default_compression = level
-
-      Zip::File.open(dst, Zip::File::CREATE) do |zip_file|
+      Zip::OutputStream.open(dst) do |zip|
         products.each do |p|
-          zip_file.get_output_stream(p.dst) do |f|
-            f.write(File.open(p.src, 'rb').read)
-          end
+          entry = Zip::Entry.new('', p.dst)
+          entry.gather_fileinfo_from_srcpath(p.src)
+          zip.put_next_entry(entry, nil, nil, Zip::Entry::DEFLATED, level)
+          entry.get_input_stream { |is| Zip::IOExtras.copy_stream(zip, is) }
         end
       end
     end

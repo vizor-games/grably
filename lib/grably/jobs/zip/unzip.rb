@@ -1,6 +1,5 @@
 module Grably # :nodoc:
-  # TBD
-  class UnzipJob
+  class UnzipJob # :nodoc:
     include Grably::Job
 
     srcs :files
@@ -15,7 +14,7 @@ module Grably # :nodoc:
       FileUtils.mkdir_p(out)
 
       files.each do |s|
-        ['unzip', '-d', out, s.src].run
+        unpack(s, out, type: :zip)
       end
 
       out

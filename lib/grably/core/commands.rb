@@ -8,6 +8,7 @@ require_relative 'commands/ln'
 require_relative 'commands/log'
 require_relative 'commands/run'
 require_relative 'commands/serialize'
+require_relative 'commands/pack'
 
 module Grably # :nodoc:
   # Make all methods as MODULE methods

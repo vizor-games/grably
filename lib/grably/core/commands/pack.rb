@@ -10,19 +10,20 @@ module Grably # :nodoc:
   # @param type [Hash] archive options
   #   :type - archive type (one of :zip, :tar, :tar_gz). Archive type will be autodetected if absent.
   #   :compression_level - compression level for :zip and :tar_gz archive types
-  def pack(products, dst, opts = nil) # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
+  def pack(products, dst, opts = nil) # rubocop:disable Metrics/MethodLength
     products = Product.expand(products)
 
     type = opts[:type]
     type = Compress.autodetect_archive_type(dst) if type.nil?
 
-    if type == :zip
+    case type
+    when :zip
       Compress.pack_zip(products, dst, opts[:compression_level])
-    elsif type == :tar
+    when :tar
       File.open(dst, 'wb') do |f|
         Compress.pack_tar(products, f)
       end
-    elsif type == :tar_gz
+    when :tar_gz
       Zlib::GzipWriter.open(dst, opts[:compression_level]) do |f|
         Compress.pack_tar(products, f)
       end
@@ -40,13 +41,14 @@ module Grably # :nodoc:
     type = opts[:type]
     type = Compress.autodetect_archive_type(src) if type.nil?
 
-    if type == :zip
+    case type
+    when :zip
       Compress.unpack_zip(src, dst_dir)
-    elsif type == :tar
+    when :tar
       File.open(src, 'rb') do |f|
         Compress.unpack_tar(f, dst_dir)
       end
-    elsif type == :tar_gz
+    when :tar_gz
       Zlib::GzipReader.open(src) do |f|
         Compress.unpack_tar(f, dst_dir)
       end

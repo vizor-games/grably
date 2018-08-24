@@ -43,97 +43,105 @@ module PackTest
   end
 end
 
-describe Grably, '.pack' do
-  include PackTest
+module Grably
+  module Compress
+    describe 'Grably::autodetect_archive_type' do
+      context 'When archive filename ends with .zip' do
+        it { expect(Compress.autodetect_archive_type('a.zip')).to be(:zip) }
+      end
 
-  context 'should detect archive type' do
-    it 'should detect zip' do
-      expect(Grably::Compress.autodetect_archive_type('a.zip')).to be(:zip)
+      context 'When archive filename ends with .tar' do
+        it { expect(Compress.autodetect_archive_type('a.tar')).to be(:tar) }
+      end
+
+      context 'When archive filename ends with .tar.gz' do
+        it { expect(Compress.autodetect_archive_type('a.tar.gz')).to be(:tar_gz) }
+      end
+
+      context 'When archive extension unknown' do
+        it do
+          expect { Compress.autodetect_archive_type('a.out') }
+            .to raise_error('error detecting archive type for: a.out')
+        end
+      end
     end
 
-    it 'should detect tar' do
-      expect(Grably::Compress.autodetect_archive_type('a.tar')).to be(:tar)
-    end
+    describe 'Grably::{pack,unpack}' do
+      include PackTest
 
-    it 'should detect tar.gz' do
-      expect(Grably::Compress.autodetect_archive_type('a.tar.gz')).to be(:tar_gz)
-    end
-  end
+      before(:all) { do_setup }
+      before(:each) { do_prepare }
 
-  context 'should pack/unpack the same way as standard tools' do
-    before(:all) do
-      do_setup
-    end
+      context 'When working with zip' do
+        it 'should pack/unpack archive itself' do
+          arc = arc_name('zip')
+          pack(@src_dir, arc)
+          unpack(arc, @dst_dir)
+          expect(scan_files(@dst_dir)).to eql(@src_files)
+        end
 
-    before(:each) do
-      do_prepare
-    end
+        it 'should pack archive itself and unpack with standard tool' do
+          arc = arc_name('zip')
+          pack(@src_dir, arc)
+          ['unzip', arc].run(chdir: @dst_dir)
+          expect(scan_files(@dst_dir)).to eql(@src_files)
+        end
 
-    it 'should pack/unpack zip itself' do
-      arc = arc_name('zip')
-      pack(@src_dir, arc)
-      unpack(arc, @dst_dir)
-      expect(scan_files(@dst_dir)).to eql(@src_files)
-    end
+        it 'should pack archive with standard tool and unpack itself' do
+          arc = arc_name('zip')
+          ['zip', '-r', arc, '.'].run(chdir: @src_dir)
+          unpack(arc, @dst_dir)
+          expect(scan_files(@dst_dir)).to eql(@src_files)
+        end
+      end
 
-    it 'should pack zip itself and unpack with standard tool' do
-      arc = arc_name('zip')
-      pack(@src_dir, arc)
-      ['unzip', arc].run(chdir: @dst_dir)
-      expect(scan_files(@dst_dir)).to eql(@src_files)
-    end
+      context 'When working with tar' do
+        it 'should pack/unpack archive itself' do
+          arc = arc_name('tar')
+          pack(@src_dir, arc)
+          unpack(arc, @dst_dir)
+          expect(scan_files(@dst_dir)).to eql(@src_files)
+        end
 
-    it 'should pack zip with standard tool and unpack itself' do
-      arc = arc_name('zip')
-      ['zip', '-r', arc, '.'].run(chdir: @src_dir)
-      unpack(arc, @dst_dir)
-      expect(scan_files(@dst_dir)).to eql(@src_files)
-    end
+        it 'should pack archive it self and unpack with standard tool' do
+          arc = arc_name('tar')
+          pack(@src_dir, arc)
+          ['tar', '-xf', arc].run(chdir: @dst_dir)
+          expect(scan_files(@dst_dir)).to eql(@src_files)
+        end
 
-    it 'should pack/unpack tar itself' do
-      arc = arc_name('tar')
-      pack(@src_dir, arc)
-      unpack(arc, @dst_dir)
-      expect(scan_files(@dst_dir)).to eql(@src_files)
-    end
+        it 'should pack archive with standard tool and unpack itself' do
+          arc = arc_name('tar')
+          ['tar', '-cf', arc, '.'].run(chdir: @src_dir)
+          unpack(arc, @dst_dir)
+          expect(scan_files(@dst_dir)).to eql(@src_files)
+        end
+      end
 
-    it 'should pack tar itself and unpack with standard tool' do
-      arc = arc_name('tar')
-      pack(@src_dir, arc)
-      ['tar', '-xf', arc].run(chdir: @dst_dir)
-      expect(scan_files(@dst_dir)).to eql(@src_files)
-    end
+      context 'When working with tar.gz' do
+        it 'should pack/unpack archive itself' do
+          arc = arc_name('tar.gz')
+          pack(@src_dir, arc)
+          unpack(arc, @dst_dir)
+          expect(scan_files(@dst_dir)).to eql(@src_files)
+        end
 
-    it 'should pack tar with standard tool and unpack itself' do
-      arc = arc_name('tar')
-      ['tar', '-cf', arc, '.'].run(chdir: @src_dir)
-      unpack(arc, @dst_dir)
-      expect(scan_files(@dst_dir)).to eql(@src_files)
-    end
+        it 'should pack archive itself and unpack with standard tool' do
+          arc = arc_name('tar.gz')
+          pack(@src_dir, arc)
+          ['tar', '-xzf', arc].run(chdir: @dst_dir)
+          expect(scan_files(@dst_dir)).to eql(@src_files)
+        end
 
-    it 'should pack/unpack tar.gz itself' do
-      arc = arc_name('tar.gz')
-      pack(@src_dir, arc)
-      unpack(arc, @dst_dir)
-      expect(scan_files(@dst_dir)).to eql(@src_files)
-    end
+        it 'should pack archive with standard tool and unpack itself' do
+          arc = arc_name('tar.gz')
+          ['tar', '-czf', arc, '.'].run(chdir: @src_dir)
+          unpack(arc, @dst_dir)
+          expect(scan_files(@dst_dir)).to eql(@src_files)
+        end
+      end
 
-    it 'should pack tar itself and unpack with standard tool' do
-      arc = arc_name('tar.gz')
-      pack(@src_dir, arc)
-      ['tar', '-xzf', arc].run(chdir: @dst_dir)
-      expect(scan_files(@dst_dir)).to eql(@src_files)
-    end
-
-    it 'should pack tar with standard tool and unpack itself' do
-      arc = arc_name('tar.gz')
-      ['tar', '-czf', arc, '.'].run(chdir: @src_dir)
-      unpack(arc, @dst_dir)
-      expect(scan_files(@dst_dir)).to eql(@src_files)
-    end
-
-    after(:all) do
-      do_finish
+      after(:all) { do_finish }
     end
   end
 end

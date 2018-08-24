@@ -10,7 +10,7 @@ module Grably # :nodoc:
   # @param type [Hash] archive options
   #   :type - archive type (one of :zip, :tar, :tar_gz). Archive type will be autodetected if absent.
   #   :compression_level - compression level for :zip and :tar_gz archive types
-  def pack(products, dst, opts = nil) # rubocop:disable Metrics/MethodLength
+  def pack(products, dst, opts = {}) # rubocop:disable Metrics/MethodLength
     products = Product.expand(products)
 
     type = opts[:type]

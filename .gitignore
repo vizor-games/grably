@@ -2,3 +2,5 @@
 doc
 coverage
 .yardoc
+.idea
+grably.iml

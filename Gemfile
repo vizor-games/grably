@@ -14,5 +14,6 @@ group :dev do
   gem 'rubocop', '~> 0.50.0'
   gem 'simplecov', '0.15.1'
   gem 'test-unit'
+  gem 'webmock'
   gem 'yard', '~> 0.9.5'
 end

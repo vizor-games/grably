@@ -9,7 +9,6 @@ gem 'thor'
 
 group :dev do
   gem 'fakefs', '0.10.0'
-  gem 'redcarpet', '3.4.0'
   gem 'rspec', '3.5.0'
   gem 'rubocop', '~> 0.50.0'
   gem 'simplecov', '0.15.1'

@@ -1,7 +1,7 @@
 require 'rspec'
 require 'fileutils'
 require 'tmpdir'
-require 'grably'
+require 'grably/core'
 require 'digest'
 
 module PackTest

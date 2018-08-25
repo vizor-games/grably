@@ -6,8 +6,12 @@ module Grably
   describe 'Grably#fetch' do
     # Use this file as fixture file name
     let(:filename) { File.basename(__FILE__) }
-    # Use this file as downloadable content
-    let(:file_content) { IO.binread(__FILE__) }
+
+    # Use this file content as fixture data
+    # Freeze this string to ensure data safety
+    # When passing to webmock as response body we MUST duplicate this object
+    # with `dup` to get tests working on ruby-head (currently 2.6.0)
+    let(:file_content) { IO.binread(__FILE__).freeze }
 
     let(:default_url) { 'https://example.com/resource' }
 
@@ -18,7 +22,7 @@ module Grably
         stub_request(:get, default_url)
           .to_return(
             status: 200,
-            body: file_content,
+            body: file_content.dup,
             headers: { 'Content-Length' => file_content.length,
                        'Content-Disposition' => "attachment; filename=\"#{filename}\"" }
           )
@@ -36,7 +40,7 @@ module Grably
         stub_request(:get, default_url)
           .to_return(
             status: 200,
-            body: file_content,
+            body: file_content.dup,
             headers: { 'Content-Length' => file_content.length,
                        'Content-Disposition' => "attachment; filename=\"#{filename}\"" }
           )

@@ -25,13 +25,9 @@ module Grably # :nodoc:
     end
 
     def run_safe(cmd, opts)
-      begin
-        run(cmd, opts)
-      rescue StandardError => _err
-        return false
-      end
-
-      true
+      return run(cmd, opts)
+    rescue StandardError => _err
+      return nil
     end
 
     # General abstraction to run commands in open3 way. Intended use is
@@ -46,19 +42,21 @@ module Grably # :nodoc:
     #   `chdir:` used to change working directory of child process.
     # @block could be provided to process contens of STDOUT
     # @returns [Array<String>] lines from STDOUT
-    def run(cmd, opts = {}, &_block) # rubocop:disable Metrics/AbcSize
+    def run(cmd, opts = {}, &_block) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       env, cmd = prepare_cmd(cmd)
-      # Merge basic opts with user provided
-      opts = { err: %i(child out) }.update(opts)
       # Store last command. env and cmd flipped, because usualy we more
       # interested in command instead of environment
       Grably.last_command = [cmd, env]
-      lines = Open3.popen3(env, *cmd, opts) do |_stdin, stdout, _stderr, _thr|
-        stdout.sync = true
-        stdout.each { |l| yield(l) if block_given? }
+      lines = []
+      Open3.popen2e(env, *cmd, opts) do |_stdin, stdout_and_stderr, _thr|
+        stdout_and_stderr.sync = true
+        stdout_and_stderr.each do |l|
+          lines << l
+          yield(l) if block_given?
+        end
       end
 
-      return if $CHILD_STATUS.exitstatus.zero?
+      return lines.join if $CHILD_STATUS.exitstatus.zero?
       # Store error and exitstatus for later use. It useful when building
       # CI piplines and one can use error message.
       Grably.last_error = [$CHILD_STATUS.exitstatus, lines]

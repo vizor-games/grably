@@ -1,16 +1,28 @@
+require 'rbconfig'
+
 module Grably # :nodoc:
-  # Short OS family name
-  # :win - Windows
-  # :linux - Linux
-  # :mac - OS X
-  PLATFORM = case RUBY_PLATFORM
-             when /mingw/, /cygwin/
+  # Keeps value of RbConfig::CONFIG['host_os']
+  HOST_OS = RbConfig::CONFIG['host_os']
+  # Keeps short os name. It suppoused to be exact host OS name, not ruby
+  # platform.
+  # Possible values are: :windows, :mac, :linux.
+  # Other OSes may be unsupported.
+  PLATFORM = case HOST_OS
+             when /mswin|msys|mingw|cygwin|bccwin|wince|emc/
                :windows
-             when /mac/, /darwin/
+             when /darwin|mac os/
                :mac
-             else
+             when /linux/
                :linux
+             when /solaris|bsd/
+               :unix
+             else
+               raise "Unknown host OS: #{HOST_OS}"
              end
+
+  # Keeps mark if we running with jruby interpreter
+  JRUBY = RUBY_PLATFORM == 'java'
+
   # Number of CPU cores
   CORES_NUMBER =
     case PLATFORM
@@ -36,10 +48,15 @@ module Grably # :nodoc:
       raise "can't determine 'number_of_processors' for '#{RUBY_PLATFORM}'"
     end
 
-  %w(windows mac linux).each do |platform|
+  %i(windows mac linux).each do |platform|
     # rubocop:disable Security/Eval
     eval("def #{platform}?; #{PLATFORM == platform} end")
     # rubocop:enable Security/Eval
+  end
+
+  # Tells if we running with jruby interpreter
+  def jruby?
+    JRUBY
   end
 
   def cores_number

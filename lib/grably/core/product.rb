@@ -172,6 +172,10 @@ module Grably
           product
         end
 
+        def expand_nil(_nil, _)
+          []
+        end
+
         # We define method table for expand rules.
         # Key is object class, value is method.
         #
@@ -187,7 +191,8 @@ module Grably
             String => :expand_string,
             Proc => :expand_proc,
             Grably::Core::Task => :expand_task,
-            Product => :expand_product
+            Product => :expand_product,
+            NilClass => :expand_nil
           }
           .flat_map { |k, v| [k, ProductExpand.singleton_method(v)] }]
           .freeze
@@ -268,7 +273,7 @@ module Grably
       end
 
       def to_s
-        inspect
+        @src
       end
 
       def ==(other)

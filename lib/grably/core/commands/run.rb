@@ -83,6 +83,9 @@ module Grably # :nodoc:
       #    expected here.
       env, cmd = cmd.partition { |x| x.is_a?(Hash) }
 
+      # Transform all values to strings
+      cmd.map!(&:to_s)
+
       # TODO: Should we or should not fix splashes for windows commands. And how
       # it should be implemented. Legacy code was like
       #  # Not all windows apps "slash tolerant"

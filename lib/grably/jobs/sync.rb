@@ -19,7 +19,7 @@ module Grably # :nodoc:
 
     def setup(srcs, dst = nil, _p = {})
       @files = srcs
-      @dst = dst || job_dir
+      @dst = dst || job_path
 
       @proto = :file
 
@@ -80,7 +80,7 @@ module Grably # :nodoc:
     def setup_ssh_opts
       @host = @dst
       # '/' at the end will cause to sync internal file structure
-      @dst = job_dir('files') + '/'
+      @dst = job_path('files') + '/'
 
       @host.match(SSH_HOST) do |m|
         @ssh_pass = m[2]

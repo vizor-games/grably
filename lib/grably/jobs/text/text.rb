@@ -7,7 +7,7 @@ module Grably
     opt :filename
 
     def build
-      out = job_dir(filename)
+      out = job_path(filename)
       File.open(out, 'w') do |f|
         dump(content, f)
       end

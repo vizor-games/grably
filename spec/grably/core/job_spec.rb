@@ -62,7 +62,7 @@ module WordCountTest
     def write_result
       @executed = true # Mark as executed
       word_count = meta.values.inject(:+)
-      out = job_dir('count.txt')
+      out = job_path('count.txt')
       IO.write(out, word_count.to_s)
       out
     end

@@ -42,7 +42,7 @@ module Grably
     end
 
     def jdk_env
-      { 'JAVA_HOME' => JDK_HOME, 'JAVAC' => File.join(home, 'bin', 'javac') }
+      { 'JAVA_HOME' => JDK_HOME, 'JAVAC' => File.join(JDK_HOME, 'bin', 'javac') }
     end
 
     def java_cmd(p = {})
@@ -66,7 +66,7 @@ module Grably
       target_version = p.delete(:target) || JAVA_TARGET
       max_mem = p.delete(:max_mem)
       raise "unknown options: #{p.inspect}" unless p.empty?
-      cmd = [jdk_env, File.join(home, 'bin', 'javac')]
+      cmd = [jdk_env, File.join(JDK_HOME, 'bin', 'javac')]
       cmd += ["-J-Xmx#{max_mem}"] if max_mem
       cmd += ['-target', target_version] if target_version
       cmd += ['-source', source_version] if source_version

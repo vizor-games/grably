@@ -2,43 +2,62 @@ module Grably
   module Java # :nodoc:
     module_function
 
-    def detect_jdk # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity, Metrics/LineLength
-      jdk_home = ENV['__GRABLY_JDK__']
-      java_target = ENV['__GRABLY_JAVA_TARGET__']
+    WHICH_JAVA_CMD = [
+      'java',
+      '-cp', File.join(File.dirname(__FILE__), 'javahome'),
+      'JavaHome'
+    ].freeze
 
-      unless jdk_home && java_target
-        log_msg "Detecting JDK's".yellow
+    JAVAC = windows? ? 'javac.exe' : 'javac'
+    JAVA = windows? ? 'java.exe' : 'java'
 
-        javac = windows? ? 'javac.exe' : 'javac'
+    JDK_ENV_KEY = '__GRABLY_JDK__'.freeze
+    JAVA_TARGET_ENV_KEY = '__GRABLY_JAVA_TARGET__'.freeze
 
-        javahome_lines = [
-          'java',
-          '-cp', File.join(File.dirname(__FILE__), 'javahome'),
-          'JavaHome'
-        ].run
+    private_constant :WHICH_JAVA_CMD
+    private_constant :JAVAC
+    private_constant :JAVA
 
-        jdk_home, java_target = javahome_lines.split("\n")
+    private_constant :JDK_ENV_KEY
+    private_constant :JAVA_TARGET_ENV_KEY
 
-        jdk_home = File.expand_path(jdk_home)
-        unless File.exist?(File.join(jdk_home, 'bin', javac))
-          if File.exist?(File.join(jdk_home, '..', 'bin', javac))
-            jdk_home = File.expand_path(File.join(jdk_home, '..'))
-          else
-            # rubocop:disable Metrics/BlockNesting
-            java = windows? ? 'java.exe' : 'java'
-            raise "No JDK found, but found JRE: #{jdk_home}" if File.exist?(File.join(jdk_home, 'bin', java))
-            raise 'No JDK found'
-          end
-        end
+    def javac
+      JAVAC
+    end
+
+    def detect_jdk # rubocop:disable Metrics/CyclomaticComplexity
+      jdk_home = ENV[JDK_ENV_KEY]
+      java_target = ENV[JAVA_TARGET_ENV_KEY]
+
+      unless jdk_home || java_target
+        jdk_home, java_target = which_java
+        ENV[JDK_ENV_KEY] = jdk_home
+        ENV[JAVA_TARGET_ENV_KEY] = java_target
       end
-
-      ENV['__GRABLY_JDK__'] = jdk_home
-      ENV['__GRABLY_JAVA_TARGET__'] = java_target
 
       java_target = c.java_target || ENV['java_target'] || java_target
       java_source = c.java_source || ENV['java_source'] || java_target
 
       [jdk_home, java_target, java_source]
+    end
+
+    def which_java
+      log_msg "Detecting JDK's".yellow
+      jdk_home, java_target = WHICH_JAVA_CMD.run.split("\n")
+
+      jdk_home = File.expand_path(jdk_home)
+      jdk_home = check_jdk_home(jdk_home) unless File.exist?(File.join(jdk_home, 'bin', javac))
+
+      [jdk_home, java_target]
+    end
+
+    def check_java_home(jdk_home)
+      if File.exist?(File.join(jdk_home, '..', 'bin', javac))
+        File.expand_path(File.join(jdk_home, '..'))
+      else
+        raise "No JDK found, but found JRE: #{jdk_home}" if File.exist?(File.join(jdk_home, 'bin', JAVA))
+        raise 'No JDK found'
+      end
     end
 
     def jdk_env
@@ -91,10 +110,5 @@ module Grably
     def java_virtual_slot
       %w(java virtual)
     end
-
-    JDK_HOME, JAVA_TARGET, JAVA_SOURCE = detect_jdk
-    JRE_HOME = File.join(JDK_HOME, 'jre')
-
-    log_msg "Using JDK: #{JDK_HOME}, target: #{JAVA_TARGET}, source: #{JAVA_SOURCE}"
   end
 end

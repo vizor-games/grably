@@ -51,7 +51,7 @@ module Grably # :nodoc:
 
     args += ['-d', out_dir]
     args += ['-classpath', classpath.join(File::PATH_SEPARATOR)] unless classpath.empty?
-    #args += ['-sourcepath', srcs_dir]
+    # args += ['-sourcepath', srcs_dir]
     args += @srcs.map(&:to_s)
 
     args_file = job_path('args-file')

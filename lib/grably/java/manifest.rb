@@ -3,20 +3,20 @@ module Grably
     include Grably::Job
 
     PRIMARY_KEYS = [
-        /Manifest-Version/,
-        /Midlet-Name/,
-        /MIDlet-Version/,
-        /MIDlet-Vendor/,
-        /MIDlet-Jar-URL/,
-        /MIDlet-Jar-Size/,
-        /MIDlet-Description/,
-        /MIDlet-Icon/,
-        /MIDlet-Info-URL/,
-        /MIDlet-[0-9]*/,
-        /MIDlet-Delete-Confirm/,
-        /MIDlet-Permissions/,
-        /MicroEdition-Configuration/,
-        /MicroEdition-Profile/
+      /Manifest-Version/,
+      /Midlet-Name/,
+      /MIDlet-Version/,
+      /MIDlet-Vendor/,
+      /MIDlet-Jar-URL/,
+      /MIDlet-Jar-Size/,
+      /MIDlet-Description/,
+      /MIDlet-Icon/,
+      /MIDlet-Info-URL/,
+      /MIDlet-[0-9]*/,
+      /MIDlet-Delete-Confirm/,
+      /MIDlet-Permissions/,
+      /MicroEdition-Configuration/,
+      /MicroEdition-Profile/
     ].freeze
 
     MANIFEST_LINE_SIZE = 70
@@ -35,7 +35,7 @@ module Grably
 
     def write_line(f, s)
       while s.size > MANIFEST_LINE_SIZE
-        f.puts(s[0..MANIFEST_LINE_SIZE-1])
+        f.puts(s[0..MANIFEST_LINE_SIZE - 1])
         s = ' ' + s[MANIFEST_LINE_SIZE..-1]
       end
       f.puts(s)
@@ -69,12 +69,12 @@ module Grably
       PRIMARY_KEYS.size
     end
 
-    def self.create_manifest(opts, splitter)
+    def self.create_manifest(opts, splitter) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       if splitter.nil?
         splitter = lambda do |s|
           lines = []
           while s.size > MANIFEST_LINE_SIZE
-            lines << s[0..MANIFEST_LINE_SIZE-1]
+            lines << s[0..MANIFEST_LINE_SIZE - 1]
             s = ' ' + s[MANIFEST_LINE_SIZE..-1]
           end
           lines << s
@@ -82,8 +82,9 @@ module Grably
         end
       end
 
-      keys = opts.keys.sort do |x,y|
-        rx, ry = rate(x), rate(y)
+      keys = opts.keys.sort do |x, y|
+        rx = rate(x)
+        ry = rate(y)
         if rx == ry
           x <=> y
         else
@@ -95,10 +96,10 @@ module Grably
 
       keys.each do |k|
         v = opts[k]
-        v = v * "," if v.is_a? Array
+        v *= ',' if v.is_a? Array
         s = "#{k}: #{v}"
         l = splitter.call(s)
-        l = [ l ] unless l.is_a? Array
+        l = [l] unless l.is_a? Array
         lines += l
       end
 

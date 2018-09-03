@@ -21,7 +21,7 @@ module Grably # :nodoc:
       log_msg "Zipping #{files.size} files into #{File.basename(dst)}"
 
       tmp_dst = job_path(File.basename(dst))
-      pack(srcs, tmp_dst, compression_level: meta[:compression_level], type: :zip)
+      pack(@files, tmp_dst, compression_level: meta[:compression_level], type: :zip)
       Product.new(tmp_dst, dst, meta)
     end
   end

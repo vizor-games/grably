@@ -41,7 +41,7 @@ module Grably
         @job_args.any? { |_name, desc| desc.first == :isrc }
       end
 
-      def job_dir(path = nil)
+      def job_path(path = nil)
         path.nil? ? @job_dir : File.join(@job_dir, path)
       end
 
@@ -75,7 +75,7 @@ module Grably
       # variables
       def initialize_state(*args)
         # Load previous state
-        @manifest = Manifest.new(job_dir)
+        @manifest = Manifest.new(job_path)
         _loaded = @manifest.load # try to load manifest
 
         if self.class.method_defined?(:setup)

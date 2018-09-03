@@ -36,15 +36,13 @@ module Grably # :nodoc:
       raise "can't determine 'number_of_processors' for '#{RUBY_PLATFORM}'"
     end
 
-  class << self
-    %w(windows mac linux).each do |platform|
-      # rubocop:disable Security/Eval
-      eval("def #{platform}?; #{PLATFORM == platform} end")
-      # rubocop:enable Security/Eval
-    end
+  %w(windows mac linux).each do |platform|
+    # rubocop:disable Security/Eval
+    eval("def #{platform}?; #{PLATFORM == platform} end")
+    # rubocop:enable Security/Eval
+  end
 
-    def cores_number
-      CORES_NUMBER
-    end
+  def cores_number
+    CORES_NUMBER
   end
 end

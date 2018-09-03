@@ -10,7 +10,7 @@ module Grably # :nodoc:
 
     def build
       log_msg 'Unpacking files'
-      out = job_dir('out')
+      out = job_path('out')
       FileUtils.mkdir_p(out)
 
       files.each do |s|

@@ -38,7 +38,7 @@ module Grably # :nodoc:
 
     classpath = @libs.clone
     unless @classes.nil?
-      cp(@classes, classed_dir)
+      ln(@classes, classed_dir)
       classpath << classed_dir
     end
 

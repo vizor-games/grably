@@ -2,6 +2,7 @@ module Grably # :nodoc:
   class JavacJob # :nodoc:
     include Grably::Job
     include Grably::Java
+    include FileUtils
 
     srcs :srcs
     srcs :libs
@@ -31,9 +32,9 @@ module Grably # :nodoc:
     classed_dir = job_path('classes')
     out_dir = job_path('out')
 
-    # Пустой каталог, чтобы jar сорцы не перекомпилировались
-    srcs_dir = job_path('srcs')
-    mkdir(srcs_dir)
+    # # Make free dir in order to skip unnecessary recompiling for jar sources
+    # srcs_dir = job_path('srcs')
+    # mkdir_p(srcs_dir)
 
     classpath = @libs.clone
     unless @classes.nil?
@@ -50,7 +51,8 @@ module Grably # :nodoc:
 
     args += ['-d', out_dir]
     args += ['-classpath', classpath.join(File::PATH_SEPARATOR)] unless classpath.empty?
-    args += ['-sourcepath', srcs_dir, @srcs.map(&:to_s)]
+    #args += ['-sourcepath', srcs_dir]
+    args += @srcs.map(&:to_s)
 
     args_file = job_path('args-file')
     File.open(args_file, 'w') do |f|
@@ -58,7 +60,7 @@ module Grably # :nodoc:
     end
     args = "@#{args_file}"
 
-    mkdir(out_dir)
+    mkdir_p(out_dir)
     [javac_cmd(target: @target, source: @source), args].run { |l| puts "  #{l}" }
 
     { out_dir => '**/*' }

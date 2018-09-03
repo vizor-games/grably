@@ -1,4 +1,5 @@
 require 'open3'
+require 'shellwords'
 
 # Ruby array extensions
 class Array
@@ -40,27 +41,29 @@ module Grably # :nodoc:
     #   or it's arguments.
     # @param opts [Hash] pure Open3 options Hash. Most useful example is
     #   `chdir:` used to change working directory of child process.
-    # @block could be provided to process contens of STDOUT
-    # @returns [Array<String>] lines from STDOUT
+    # @block could be provided to process contens of STDOUT and STDERR
+    # @returns String lines from STDOUT and STDERR
     def run(cmd, opts = {}, &_block) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       env, cmd = prepare_cmd(cmd)
       # Store last command. env and cmd flipped, because usualy we more
       # interested in command instead of environment
       Grably.last_command = [cmd, env]
-      lines = []
-      Open3.popen2e(env, *cmd, opts) do |_stdin, stdout_and_stderr, _thr|
+      lines = ''
+      status = Open3.popen2e(env, *cmd, opts) do |_stdin, stdout_and_stderr, thr|
         stdout_and_stderr.sync = true
         stdout_and_stderr.each do |l|
-          lines << l
+          lines += l
           yield(l) if block_given?
         end
+        lines.chomp!
+        thr.value
       end
 
-      return lines.join if $CHILD_STATUS.exitstatus.zero?
+      return lines if status.exitstatus.zero?
       # Store error and exitstatus for later use. It useful when building
       # CI piplines and one can use error message.
-      Grably.last_error = [$CHILD_STATUS.exitstatus, lines]
-      raise 'error: '.red.bright + cmd.red + "\nfail log: #{lines}".green
+      Grably.last_command = [cmd, status.exitstatus, lines]
+      raise 'error: '.red.bright + Shellwords.shelljoin(cmd).red + "\nfail log: #{lines}".green
     end
 
     attr_reader :last_command

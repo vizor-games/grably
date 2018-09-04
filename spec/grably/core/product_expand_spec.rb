@@ -1,4 +1,3 @@
-require 'rspec'
 require 'grably/core/product'
 
 include Grably::Core

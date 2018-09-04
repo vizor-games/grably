@@ -98,17 +98,5 @@ module Grably
       srcs = srcs.map { |s| s.is_a?(Product) ? s.src : s }
       srcs.join(File::PATH_SEPARATOR)
     end
-
-    def java_slot(target = JAVA_TARGET)
-      ['java', target]
-    end
-
-    def java_binary_slot
-      %w(java binary)
-    end
-
-    def java_virtual_slot
-      %w(java virtual)
-    end
   end
 end

@@ -1,3 +1,6 @@
+# Always require rake
+require 'rake'
+
 # Grably main module.
 # TBD
 module Grably

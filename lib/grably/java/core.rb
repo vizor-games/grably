@@ -80,18 +80,6 @@ module Grably
       srcs.join(File::PATH_SEPARATOR)
     end
 
-    def java_slot(target = JAVA_TARGET)
-      ['java', target]
-    end
-
-    def java_binary_slot
-      %w(java binary)
-    end
-
-    def java_virtual_slot
-      %w(java virtual)
-    end
-
     JDK_HOME, JAVA_TARGET, JAVA_SOURCE = detect_jdk
     JRE_HOME = File.join(JDK_HOME, 'jre')
 

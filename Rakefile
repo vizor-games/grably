@@ -2,7 +2,6 @@ require 'bundler/setup'
 
 require 'rspec/core/rake_task'
 require 'rubocop/rake_task'
-require 'rake/testtask'
 require 'yard'
 
 # Will use base grably module
@@ -18,12 +17,6 @@ RSpec::Core::RakeTask.new(:rspec)
 # Linter
 RuboCop::RakeTask.new(:lint) do |t|
   t.options = %w(-S -D)
-end
-
-# Unit tests
-Rake::TestTask.new do |t|
-  t.libs << %w(test lib)
-  t.test_files = FileList['test/**/test_*.rb']
 end
 
 desc 'Generate documentation'

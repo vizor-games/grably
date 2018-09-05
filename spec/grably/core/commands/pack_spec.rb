@@ -28,7 +28,7 @@ module PackTest
     @src_dir = File.join(@tmp_dir, 'src')
     @dst_dir = File.join(@tmp_dir, 'dst')
     FileUtils.mkdir_p(@src_dir)
-    cp('test', @src_dir)
+    cp('spec', @src_dir)
     @src_files = scan_files(@src_dir)
   end
 

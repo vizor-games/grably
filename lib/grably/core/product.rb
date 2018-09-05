@@ -14,6 +14,9 @@ module Grably
 
     # Set of predefined product filters, used by ProductExpand
     module ProductFilter
+      # TODO: I'm pretty sure that someone would like to have set_no_extglob, set_no_dotmatch, set_no_pathname
+      # TODO: as global methods for ProductFilter module
+      GLOB_MATCH_MODE = File::FNM_EXTGLOB | File::FNM_DOTMATCH | File::FNM_PATHNAME
       # Generates lambda filter out of `String` with
       # glob pattern description
       def generate_glob_filter(glob)
@@ -22,9 +25,7 @@ module Grably
         # Strip leading '!' then
         glob.remove_prefix!('!') if negative
         lambda do |path|
-          # TODO: I'm pretty sure that someone would like to have set_no_extglob, set_no_dotmatch, set_no_pathname
-          # TODO: as global methods for ProductFilter module
-          matches = File.fnmatch(glob, path, File::FNM_EXTGLOB | File::FNM_DOTMATCH | File::FNM_PATHNAME)
+          matches = File.fnmatch(glob, path, GLOB_MATCH_MODE)
           # inverse match if glob is negative
           matches = !matches if negative
           matches
@@ -56,7 +57,7 @@ module Grably
       def filter_products(products, new_base, old_base, &dst_filter)
         products
           .map { |p| [p.src, p.dst, p.meta] }
-          .select { |_, dst, _| !old_base || dst.start_with?(old_base) }
+          .select { |_, dst, _| !old_base || File.fnmatch("#{old_base}/**/*", dst, GLOB_MATCH_MODE) }
           .map { |src, dst, meta| [src, dst.gsub(%r{^#{old_base.to_s}[/\\]}, ''), meta] }
           .select(&dst_filter)
           .map { |src, dst, meta| [src, new_base.nil? ? dst : File.join(new_base, dst), meta] }

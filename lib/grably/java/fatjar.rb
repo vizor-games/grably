@@ -1,8 +1,8 @@
 module Grably
-  # Creates single fat or uber jar of provided jar files. Main steps to produce
-  # fat jar are:
+  # Creates single fat (or uber) jar of provided jar files. Main steps to
+  # produce fat jar are:
   #  - unpack every provided jar to temporary directory
-  #  - drop all *.{SF,DSA,RSA} files from META-INF directory because repacing
+  #  - drop all *.{SF,DSA,RSA} files from META-INF directory because repacking
   #    breaks signing
   #  - add manifest
   #  - pack everything into single jar file
@@ -12,7 +12,7 @@ module Grably
 
     srcs :jars
     src :manifest
-    opt :name
+    opt :jar_name
 
     # FatJar job setup method
     # @param jars [Array<Product>]  list of jar files to process. May be
@@ -22,12 +22,12 @@ module Grably
     def setup(jars, manifest, name: 'a.jar')
       @jars = jars
       @manifest = manifest
-      @name = name
+      @jar_name = name
     end
 
     def build
-      out = job_path(name)
-      Product.expand([prepare, manifest], out)
+      out = job_path(jar_name)
+      pack(Product.expand([prepare, manifest]), out)
       out
     end
 
@@ -39,11 +39,8 @@ module Grably
         unpack(jar, File.join(tmp, File.basename(jar, '*.jar')))
       end
 
-      # Remove all sigantures
-      rm(Dir[File.join(tmp, '**/*.{SF,DSA,RSA}')])
-
-      # Collect all files
-      Product.expand(Dir[File.join(tmp, '*')].map { |x| { x => '**/*' } })
+      # Collect all files excluding signatures
+      Product.expand(Dir[File.join(tmp, '*')] => '!**/*.{SF,DSA,RSA}')
     end
   end
 end

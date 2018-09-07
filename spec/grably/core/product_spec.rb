@@ -46,6 +46,32 @@ module Grably
           end
         end
 
+        context 'context array may be expanded using filter' do
+          files = %w(lib/open.rb lib/close.rb spec/open_spec.rb spec/close_spec.rb)
+
+          before(:all) do
+            @tmpdir = Dir.mktmpdir
+            files
+              .map { |f| File.join(@tmpdir, f) }
+              .each { |f| FileUtils.mkdir_p(File.dirname(f)) }
+              .each { |f| FileUtils.touch(f) }
+          end
+
+          it do
+            expect(Product.expand(Dir["#{@tmpdir}/*"] => 'open*.rb').map(&:dst))
+              .to match_array %w(open.rb open_spec.rb)
+          end
+
+          it do
+            expect(Product.expand(Dir["#{@tmpdir}/*"] => '!close*.rb').map(&:dst))
+              .to match_array %w(open.rb open_spec.rb)
+          end
+
+          after(:all) do
+            FileUtils.rm_rf(@tmpdir)
+          end
+        end
+
         it 'should be flatmap operation' do
           expect(Product.expand([[[[[[Product.new('foo.json')]]]]]])).to eq([Product.new('foo.json')])
         end

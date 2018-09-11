@@ -3,7 +3,7 @@ PATH
   specs:
     grably (0.0.3)
       colorize (~> 0.8.1)
-      jac (~> 0.0.3)
+      jac (~> 0.0.5)
       powerpack (~> 0.1.0)
       rake (~> 12.0)
       rubyzip (~> 1.2.1)
@@ -22,8 +22,9 @@ GEM
     docile (1.1.5)
     fakefs (0.10.0)
     hashdiff (0.3.7)
-    jac (0.0.4)
+    jac (0.0.5)
     json (2.1.0)
+    json (2.1.0-java)
     parallel (1.12.1)
     parser (2.5.1.2)
       ast (~> 2.4.0)
@@ -33,7 +34,6 @@ GEM
     rainbow (2.2.2)
       rake
     rake (12.3.1)
-    redcarpet (3.4.0)
     rspec (3.5.0)
       rspec-core (~> 3.5.0)
       rspec-expectations (~> 3.5.0)
@@ -73,12 +73,12 @@ GEM
     yard (0.9.16)
 
 PLATFORMS
+  java
   ruby
 
 DEPENDENCIES
   fakefs (= 0.10.0)
   grably!
-  redcarpet (= 3.4.0)
   rspec (= 3.5.0)
   rubocop (~> 0.50.0)
   simplecov (= 0.15.1)

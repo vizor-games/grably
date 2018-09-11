@@ -4,14 +4,14 @@ rvm:
   - 2.4.0
   - 2.5.0
   - ruby-head
-  - jruby-head
+  - jruby-9.2.0.0
 jdk:
   - openjdk8
   - openjdk9
   - oraclejdk8
   - oraclejdk9
 
-matrix: 
+matrix:
   exclude:
     - rvm: 2.4.0
       jdk: openjdk8
@@ -35,7 +35,10 @@ matrix:
       jdk: oraclejdk8
 
   allow_failures:
-    - rvm: jruby-head
+    - rvm: jruby-9.2.0.0
+      jdk: oraclejdk9
+    - rvm: jruby-9.2.0.0
+      jdk: openjdk9
 
 branches:
   only:

@@ -77,3 +77,5 @@ Rake::TaskManager.record_task_metadata = true
 puts Grably::GRABLY_BANNER.green.bright unless Grably.export?
 include Grably
 include Grably::DSL
+
+require_relative 'grably/tasks'

@@ -94,9 +94,7 @@ module Grably
     end
 
     def java_classpath(srcs)
-      srcs = [srcs] unless srcs.is_a?(Array)
-      srcs = srcs.map { |s| s.is_a?(Product) ? s.src : s }
-      srcs.join(File::PATH_SEPARATOR)
+      [srcs].flatten.compact.map { |s| s.is_a?(Product) ? s.src : s }.join(File::PATH_SEPARATOR)
     end
 
     alias classpath java_classpath

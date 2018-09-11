@@ -156,7 +156,7 @@ module Grably
             return []
           end
           # Will expand recursively over directory content.
-          File.directory?(path) ? expand_dir(expr, base) : Product.new(path, expr)
+          File.directory?(path) ? expand_dir(expr, base) : Product.new(path)
         end
 
         def expand_proc(proc, task, opts)

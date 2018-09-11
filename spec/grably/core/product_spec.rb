@@ -29,7 +29,7 @@ module Grably
           end
 
           it do
-            products = [Product.new(File.join(@wd, 'src/foo.json'), 'src/foo.json')]
+            products = [Product.new(File.join(@wd, 'src/foo.json'), 'foo.json')]
             expect(Product.expand('src/foo.json', base_dir: @wd))
               .to match_array(products)
           end

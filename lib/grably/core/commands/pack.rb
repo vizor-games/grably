@@ -141,3 +141,10 @@ module Grably # :nodoc:
     end
   end
 end
+
+class Gem::Package::TarHeader
+  # Ignore bad gid/uid
+  def self.strict_oct(str)
+    str.oct
+  end
+end

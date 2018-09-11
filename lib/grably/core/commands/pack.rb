@@ -12,21 +12,16 @@ module Grably # :nodoc:
   #   :compression_level - compression level for :zip and :tar_gz archive types
   def pack(products, dst, opts = {}) # rubocop:disable Metrics/MethodLength
     products = Product.expand(products)
-
-    type = opts[:type]
-    type = Compress.autodetect_archive_type(dst) if type.nil?
+    type = opts[:type] || Compress.autodetect_archive_type(dst)
+    level = opts[:compression_level]
 
     case type
     when :zip
-      Compress.pack_zip(products, dst, opts[:compression_level])
+      Compress.pack_zip(products, dst, level)
     when :tar
-      File.open(dst, 'wb') do |f|
-        Compress.pack_tar(products, f)
-      end
+      File.open(dst, 'wb') { |f| Compress.pack_tar(products, f) }
     when :tar_gz
-      Zlib::GzipWriter.open(dst, opts[:compression_level]) do |f|
-        Compress.pack_tar(products, f)
-      end
+      Zlib::GzipWriter.open(dst, level) { |f| Compress.pack_tar(products, f) }
     else
       raise "unknown archive type: #{type}"
     end
@@ -36,22 +31,18 @@ module Grably # :nodoc:
   # @param src [String] archive path
   # @param dst_dir [String] destination directory
   # @param opts [Symbol] archive options
-  #   :type = archive type (one of :zip, :tar, :tar_gz). Archive type will be autodetected if absent.
+  #   :type = archive type (one of :zip, :tar, :tar_gz). Archive type will be
+  #   autodetected if absent.
   def unpack(src, dst_dir, opts = {}) # rubocop:disable Metrics/MethodLength
-    type = opts[:type]
-    type = Compress.autodetect_archive_type(src) if type.nil?
+    type = opts[:type] || Compress.autodetect_archive_type(src)
 
     case type
     when :zip
       Compress.unpack_zip(src, dst_dir)
     when :tar
-      File.open(src, 'rb') do |f|
-        Compress.unpack_tar(f, dst_dir)
-      end
+      File.open(src, 'rb') { |f| Compress.unpack_tar(f, dst_dir) }
     when :tar_gz
-      Zlib::GzipReader.open(src) do |f|
-        Compress.unpack_tar(f, dst_dir)
-      end
+      Zlib::GzipReader.open(src) { |f| Compress.unpack_tar(f, dst_dir) }
     else
       raise "unknown archive type: #{type}"
     end
@@ -96,7 +87,6 @@ module Grably # :nodoc:
           dest ||= File.join(dst_dir, entry.full_name)
 
           if entry.directory? || (entry.header.typeflag == '' && entry.full_name.end_with?('/'))
-            # FileUtils.mkdir_p(dest, :mode => entry.header.mode, :verbose => false)
             FileUtils.mkdir_p(dest, verbose: false) unless File.exist?(dest)
           elsif entry.file? || (entry.header.typeflag == '' && !entry.full_name.end_with?('/'))
             unless File.exist?(dest)
@@ -133,11 +123,17 @@ module Grably # :nodoc:
       end
     end
 
+    # Archivation type to default file extension mappings
+    ARCHIVE_TYPES = {
+      zip: %w(.zip .jar .apk),
+      tar: %w(.tar),
+      tar_gz: %w(.tar.gz .tgz)
+    }.freeze
+
     def autodetect_archive_type(src)
-      return :zip if src.end_with?('.zip', '.jar')
-      return :tar if src.end_with?('.tar')
-      return :tar_gz if src.end_with?('.tar.gz', '.tgz')
-      raise "error detecting archive type for: #{src}"
+      type, _extensions = ARCHIVE_TYPES.find { |_k, v| src.end_with?(*v) }
+      raise "error detecting archive type for: #{src}" unless type
+      type
     end
   end
 end

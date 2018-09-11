@@ -4,14 +4,14 @@ rvm:
   - 2.4.0
   - 2.5.0
   - ruby-head
-  - jruby-9.1.17.0
+  - jruby-9.2.0.0
 jdk:
   - openjdk8
   - openjdk9
   - oraclejdk8
   - oraclejdk9
 
-matrix: 
+matrix:
   exclude:
     - rvm: 2.4.0
       jdk: openjdk8

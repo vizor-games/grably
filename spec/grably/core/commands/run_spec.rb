@@ -32,7 +32,8 @@ module Grably
         it { expect { cmd.run }.to raise_error(RuntimeError, /Failed/) }
         it do
           expect { cmd.run }.to raise_error(RuntimeError)
-          expect(Grably.last_command).to eq([cmd, 1, "-e:1:in `<main>': Failed! (RuntimeError)"])
+          expect(Grably.last_command)
+            .to start_with(cmd, 1, a_string_matching(/Failed!/))
         end
       end
     end

@@ -35,7 +35,10 @@ matrix:
       jdk: oraclejdk8
 
   allow_failures:
-    - rvm: jruby-head
+    - rvm: jruby-9.2.0.0
+    - jdk:
+      - oraclejdk9
+      - openjdk9
 
 branches:
   only:

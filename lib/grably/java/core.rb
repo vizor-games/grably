@@ -51,7 +51,7 @@ module Grably
       [jdk_home, java_target]
     end
 
-    def check_java_home(jdk_home)
+    def check_jdk_home(jdk_home)
       if File.exist?(File.join(jdk_home, '..', 'bin', javac))
         File.expand_path(File.join(jdk_home, '..'))
       else

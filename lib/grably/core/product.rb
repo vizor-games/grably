@@ -111,55 +111,59 @@ module Grably
       class << self
         include ProductFilter
 
-        def expand(srcs, task = nil)
+        def expand(srcs, task_or_opts = nil, opts = {})
+          # if task provided will use it as context
+          if task_or_opts.is_a?(Hash)
+            opts = task_or_opts.merge(opts)
+          else
+            task = task_or_opts
+          end
           # Wrap o in Array to simplify processing flow
           srcs = [srcs] unless srcs.is_a? Array
           # First typed expand will be array expand. So we will get array as
           # result
-          typed_expand(srcs, task)
+          typed_expand(srcs, task, opts)
         end
 
-        def expand_symbol(symbol, task)
+        def expand_symbol(symbol, task, opts)
           case symbol
           when :task_deps
-            typed_expand(task.prerequisites.map(&:to_sym), task)
+            typed_expand(task.prerequisites.map(&:to_sym), task, opts)
           else
             task_ref = Task[symbol]
-            typed_expand(task_ref, task)
+            typed_expand(task_ref, task, opts)
           end
         end
 
-        def expand_hash(hash, task)
+        def expand_hash(hash, task, opts)
           hash.flat_map do |expr, filter|
             # If got string generate lambda representing filter operation
             filter = generate_string_filter(filter) if filter.is_a? String
             raise 'Filter is not a proc %s'.format(filter) unless filter.is_a?(Proc)
-            filter.call(typed_expand(expr, task), ->(o) { expand(o, task) })
+            filter.call(typed_expand(expr, task, opts), ->(o) { expand(o, task) })
           end
         end
 
-        def expand_array(elements, task)
-          elements.flat_map { |e| typed_expand(e, task) }
+        def expand_array(elements, task, opts)
+          elements.flat_map { |e| typed_expand(e, task, opts) }
         end
 
-        def expand_string(expr, _task)
-          unless File.exist?(expr)
+        def expand_string(expr, _task, opts)
+          base = opts[:base_dir] || Dir.pwd
+          path = File.absolute_path(expr, base)
+          unless File.exist?(path)
             warn "'#{expr}' does not exist. Can't expand path"
             return []
           end
           # Will expand recursively over directory content.
-          if File.directory?(expr)
-            expand_dir(expr)
-          else
-            Product.new(expr)
-          end
+          File.directory?(path) ? expand_dir(expr, base) : Product.new(path, expr)
         end
 
-        def expand_proc(proc, task)
-          proc.call(->(o) { expand(o, task) })
+        def expand_proc(proc, task, opts)
+          proc.call(->(o) { expand(o, task, opts) })
         end
 
-        def expand_task(target_task, context_task)
+        def expand_task(target_task, context_task, _opts)
           # Behaving strictly we can only get task backet of
           # self, i.e. target_task == context_task, or if target_task is
           # context_task prerequisite (direct or indirect).
@@ -171,11 +175,11 @@ module Grably
           target_task.bucket
         end
 
-        def expand_product(product, _)
+        def expand_product(product, _, _)
           product
         end
 
-        def expand_nil(_nil, _)
+        def expand_nil(_nil, _, _)
           []
         end
 
@@ -200,7 +204,7 @@ module Grably
           .flat_map { |k, v| [k, ProductExpand.singleton_method(v)] }]
           .freeze
 
-        def typed_expand(element, task)
+        def typed_expand(element, task, opts)
           # Fetching expand rule for element type
           method_refs = METHOD_TABLE.select { |c, _| element.is_a?(c) }
           raise 'Multiple expands found for %s. Expands %s'.format(element, method_refs.keys) if method_refs.size > 1
@@ -211,7 +215,7 @@ module Grably
           end
           # Every expand_%something% method follows same contract, so we just
           # passing standard set of arguments
-          method_ref.call(element, task)
+          method_ref.call(element, task, opts)
         end
 
         ## Utility methods
@@ -224,11 +228,12 @@ module Grably
 
         private
 
-        def expand_dir(expr)
+        def expand_dir(expr, base)
           glob = File.join(expr, '**/*')
-          Dir[glob]
-            .select { |entry| File.file?(entry) }
-            .map { |file| Product.new(file, file.sub(expr + File::SEPARATOR, '')) }
+
+          Dir.glob_base(glob, base)
+             .select { |e| File.file?(File.absolute_path(e, base)) }
+             .map { |file| Product.new(File.absolute_path(file, base), file.sub(expr + File::SEPARATOR, '')) }
         end
       end
     end
@@ -303,8 +308,8 @@ module Grably
       # Including helper classes
       # Utility logic extracted from Product class to keep it clean and concise
       class << self
-        def expand(expr, task = nil)
-          Grably::Core::ProductExpand.expand(expr, task)
+        def expand(expr, task = nil, opts = {})
+          Grably::Core::ProductExpand.expand(expr, task, opts)
         end
       end
     end

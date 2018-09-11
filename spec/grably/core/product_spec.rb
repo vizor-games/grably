@@ -6,11 +6,11 @@ module Grably
       describe '::expand' do
         it 'should expand array of products to same array' do
           products = [Product.new('src/foo.json'), Product.new('src/bar.json')]
-          expect(ProductExpand.expand(products)).to eq(products)
+          expect(Product.expand(products)).to eq(products)
         end
 
         it 'should expand empty array to empty array' do
-          expect(ProductExpand.expand([])).to eq([])
+          expect(Product.expand([])).to eq([])
         end
 
         context 'expand dir as list of products' do
@@ -24,8 +24,20 @@ module Grably
           it do
             Dir.chdir(@wd) do
               products = [Product.new('src/foo.json')]
-              expect(ProductExpand.expand(['src'])).to match_array(products)
+              expect(Product.expand('src')).to match_array(products)
             end
+          end
+
+          it do
+            products = [Product.new(File.join(@wd, 'src/foo.json'), 'src/foo.json')]
+            expect(Product.expand('src/foo.json', base_dir: @wd))
+              .to match_array(products)
+          end
+
+          it do
+            products = [Product.new(File.join(@wd, 'src/foo.json'))]
+            expect(Product.expand('src', base_dir: @wd))
+              .to match_array(products)
           end
 
           after do
@@ -80,7 +92,7 @@ module Grably
           files = %w(src/foo.json src/bar.json)
           products = files.map { |f| Product.new(f, f) }
           expected = files.map { |f| Product.new(f, File.join('dst', File.split(f).last)) }
-          expanded = ProductExpand.expand(products => 'dst:src:**/*')
+          expanded = Product.expand(products => 'dst:src:**/*')
           expect(expanded).to eq(expected)
         end
 
@@ -88,7 +100,7 @@ module Grably
           products = [Product.new('src/foo.json'), Product.new('src/bar.txt')]
           # Update meta with file extension
           update_meta = ->(p) { p.update(ext: File.basename(p.dst).split('.').last) }
-          expanded = ProductExpand.expand(products => ->(o, _expand) { o.map(&update_meta) })
+          expanded = Product.expand(products => ->(o, _expand) { o.map(&update_meta) })
           expect(expanded.map { |p| p[:ext] }).to eq(%w(json txt))
         end
 
@@ -106,6 +118,14 @@ module Grably
             context = double
             allow(context).to receive(:all_prerequisite_tasks).and_return([task])
             expect(Product.expand(:foo, context)).to match_array([product])
+          end
+
+          it 'should ignore provided options' do
+            allow(Rake).to receive(:application).and_return(foo: task)
+            context = double
+            allow(context).to receive(:all_prerequisite_tasks).and_return([task])
+            expect(Product.expand(:foo, context, base_dir: '/tmp'))
+              .to match_array([product])
           end
 
           context 'when trying expand missing dependency' do

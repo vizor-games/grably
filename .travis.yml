@@ -36,9 +36,9 @@ matrix:
 
   allow_failures:
     - rvm: jruby-9.2.0.0
-    - jdk:
-      - oraclejdk9
-      - openjdk9
+      jdk: oraclejdk9
+    - rvm: jruby-9.2.0.0
+      jdk: openjdk9
 
 branches:
   only:

@@ -98,5 +98,7 @@ module Grably
       srcs = srcs.map { |s| s.is_a?(Product) ? s.src : s }
       srcs.join(File::PATH_SEPARATOR)
     end
+
+    alias classpath java_classpath
   end
 end

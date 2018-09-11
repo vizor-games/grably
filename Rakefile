@@ -1,31 +1,22 @@
-require 'bundler'
-Bundler.setup
+require 'bundler/setup'
+
 require 'rspec/core/rake_task'
 require 'rubocop/rake_task'
-require 'rake/testtask'
 require 'yard'
 
 # Will use base grably module
-require_relative 'lib/grably'
+require 'grably'
 
 # build utils
 require_relative './build/utils'
 include Grably::Dev::Utils
 
-RSpec::Core::RakeTask.new(:rspec) do |t|
-  t.rspec_opts = %w(-I lib/)
-end
+RSpec::Core::RakeTask.new(:rspec)
 
 # Code quality
 # Linter
 RuboCop::RakeTask.new(:lint) do |t|
   t.options = %w(-S -D)
-end
-
-# Unit tests
-Rake::TestTask.new do |t|
-  t.libs << %w(test lib)
-  t.test_files = FileList['test/**/test_*.rb']
 end
 
 desc 'Generate documentation'

@@ -1,3 +1,14 @@
+PATH
+  remote: .
+  specs:
+    grably (0.0.3)
+      colorize (~> 0.8.1)
+      jac (~> 0.0.3)
+      powerpack (~> 0.1.0)
+      rake (~> 12.0)
+      rubyzip (~> 1.2.1)
+      thor (~> 0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -44,7 +55,7 @@ GEM
       ruby-progressbar (~> 1.7)
       unicode-display_width (~> 1.0, >= 1.0.1)
     ruby-progressbar (1.10.0)
-    rubyzip (1.2.1)
+    rubyzip (1.2.2)
     safe_yaml (1.0.4)
     simplecov (0.15.1)
       docile (~> 1.1.0)
@@ -66,17 +77,12 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  colorize (= 0.8.1)
   fakefs (= 0.10.0)
-  jac (= 0.0.4)
-  powerpack (~> 0.1)
-  rake (~> 12.0)
+  grably!
   rspec (= 3.5.0)
   rubocop (~> 0.50.0)
-  rubyzip (~> 1.2.1)
   simplecov (= 0.15.1)
   test-unit
-  thor
   webmock
   yard (~> 0.9.5)
 

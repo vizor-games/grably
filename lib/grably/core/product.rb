@@ -1,7 +1,9 @@
 require 'powerpack/string/format' # Adds format method
 require 'powerpack/string/remove_prefix'
 require_relative 'task'
+
 require_relative 'product/file_ext'
+require_relative 'product/rename'
 
 module Grably
   module Core
@@ -12,6 +14,9 @@ module Grably
 
     # Set of predefined product filters, used by ProductExpand
     module ProductFilter
+      # TODO: I'm pretty sure that someone would like to have set_no_extglob, set_no_dotmatch, set_no_pathname
+      # TODO: as global methods for ProductFilter module
+      GLOB_MATCH_MODE = File::FNM_EXTGLOB | File::FNM_DOTMATCH | File::FNM_PATHNAME
       # Generates lambda filter out of `String` with
       # glob pattern description
       def generate_glob_filter(glob)
@@ -20,9 +25,7 @@ module Grably
         # Strip leading '!' then
         glob.remove_prefix!('!') if negative
         lambda do |path|
-          # TODO: I'm pretty sure that someone would like to have set_no_extglob, set_no_dotmatch, set_no_pathname
-          # TODO: as global methods for ProductFilter module
-          matches = File.fnmatch(glob, path, File::FNM_EXTGLOB | File::FNM_DOTMATCH | File::FNM_PATHNAME)
+          matches = File.fnmatch(glob, path, GLOB_MATCH_MODE)
           # inverse match if glob is negative
           matches = !matches if negative
           matches
@@ -54,7 +57,7 @@ module Grably
       def filter_products(products, new_base, old_base, &dst_filter)
         products
           .map { |p| [p.src, p.dst, p.meta] }
-          .select { |_, dst, _| !old_base || dst.start_with?(old_base) }
+          .select { |_, dst, _| !old_base || File.fnmatch("#{old_base}/**/*", dst, GLOB_MATCH_MODE) }
           .map { |src, dst, meta| [src, dst.gsub(%r{^#{old_base.to_s}[/\\]}, ''), meta] }
           .select(&dst_filter)
           .map { |src, dst, meta| [src, new_base.nil? ? dst : File.join(new_base, dst), meta] }
@@ -172,6 +175,10 @@ module Grably
           product
         end
 
+        def expand_nil(_nil, _)
+          []
+        end
+
         # We define method table for expand rules.
         # Key is object class, value is method.
         #
@@ -187,7 +194,8 @@ module Grably
             String => :expand_string,
             Proc => :expand_proc,
             Grably::Core::Task => :expand_task,
-            Product => :expand_product
+            Product => :expand_product,
+            NilClass => :expand_nil
           }
           .flat_map { |k, v| [k, ProductExpand.singleton_method(v)] }]
           .freeze
@@ -230,6 +238,7 @@ module Grably
     # Product instances should be immutable.
     class Product
       include Grably::ProductFileExtensions
+      include Grably::ProductRename
       attr_reader :src, :dst, :meta
 
       def initialize(src, dst = nil, meta = {})
@@ -268,7 +277,7 @@ module Grably
       end
 
       def to_s
-        inspect
+        @src
       end
 
       def ==(other)

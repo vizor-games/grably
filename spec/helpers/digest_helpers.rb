@@ -1,4 +1,4 @@
-require lib('grably/core/digest')
+require 'grably/core/digest'
 
 module DigestHelpers
   include Grably::Digest

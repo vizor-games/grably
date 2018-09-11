@@ -8,7 +8,9 @@ Metrics/BlockLength:
   Exclude:
     - 'Rakefile'
     - '**/*.rake'
-    - 'test/**/*.rb'
+    - 'spec/**/*.rb'
+Metrics/ModuleLength:
+  Exclude:
     - 'spec/**/*.rb'
 
 Style/HashSyntax:

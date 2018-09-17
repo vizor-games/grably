@@ -99,8 +99,8 @@ module Grably # :nodoc:
             end
           elsif entry.header.typeflag == '2' # Symlink!
             File.symlink(entry.header.linkname, dest)
-          else
-            raise "unknown tar entry: #{entry.full_name} type: #{entry.header.typeflag}"
+            # else
+            # raise "unknown tar entry: #{entry.full_name} type: #{entry.header.typeflag}"
           end
 
           dest = nil

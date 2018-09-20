@@ -14,3 +14,4 @@ end
 require_relative('java/javac')
 require_relative('java/manifest')
 require_relative('java/jar')
+require_relative('java/idea_module')

@@ -5,7 +5,7 @@ module Grably # :nodoc:
     require 'rexml/document'
 
     srcs :libs
-    opt :paths
+    opt :srcs
     opt :exclude
     opt :mods
     opt :name
@@ -26,7 +26,7 @@ module Grably # :nodoc:
       p = p.clone
 
       @libs = p.delete(:libs)
-      @paths = p.delete(:paths)
+      @srcs = p.delete(:srcs)
       @exclude = p.delete(:exclude)
       @mods = p.delete(:mods)
       @name = p.delete(:name)
@@ -54,7 +54,7 @@ module Grably # :nodoc:
 
       content = root.add_element 'content', 'url' => 'file://$MODULE_DIR$'
 
-      srcs = @paths || []
+      srcs = @srcs || []
       srcs = [srcs] unless srcs.is_a? Array
       srcs.each do |src|
         src = { path: src } unless src.is_a? Hash
@@ -99,7 +99,7 @@ module Grably # :nodoc:
         next unless lib.src.end_with?('.jar', '.zip')
 
         jar_path = File.expand_path(lib.src)
-        src_path = lib[:src]
+        src_path = lib[:src].src
         src_path = File.expand_path(src_path) unless src_path.nil?
 
         jar_path = Pathname.new(jar_path).relative_path_from(Pathname.new(cur_path)).to_s

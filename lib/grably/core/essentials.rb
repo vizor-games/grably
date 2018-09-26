@@ -92,8 +92,10 @@ module Grably # :nodoc:
   def jruby?
     JRUBY
   end
+  module_function :jruby?
 
   def cores_number
     CORES_NUMBER
   end
+  module_function :cores_number
 end

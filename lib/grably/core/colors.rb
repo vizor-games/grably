@@ -63,14 +63,12 @@ module Grably
 
   # Fake colors module. Generates no-op methods for string color modifications
   module FakeColors
-    class << self
-      # This generates color methods inside module. When module is included all of
-      # them will be included too
-      COLOR_CODES.each_key do |color_key|
-        # rubocop:disable Security/Eval
-        eval("def #{color_key}; self; end")
-        # rubocop:enable Security/Eval
-      end
+    # This generates color methods inside module. When module is included all of
+    # them will be included too
+    COLOR_CODES.each_key do |color_key|
+      # rubocop:disable Security/Eval
+      eval("def #{color_key}; self; end")
+      # rubocop:enable Security/Eval
     end
   end
 end
@@ -79,7 +77,11 @@ end
 class String
   case Grably::PLATFORM
   when :linux, :mac
-    include Grably::ShellColors
+    if STDOUT.isatty
+      include Grably::ShellColors
+    else
+      include Grably::FakeColors
+    end
   else
     include Grably::FakeColors
   end

@@ -79,6 +79,7 @@ module Grably # :nodoc:
       when :linux, :mac
         STDOUT.isatty
       when :windows
+        return false if jruby?
         # Sinse Windows 10 (Threshold 2 Update, Nov 2015) command line supports
         # ANSI color escape codes. Trying to determine if we can use this feature
         require_relative 'kernel32'

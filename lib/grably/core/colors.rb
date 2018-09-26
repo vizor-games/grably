@@ -1,4 +1,4 @@
-module Grably
+module Grably # :nodoc:
   COLOR_CODES = {
     normal: 0,
     bright: 1,
@@ -71,17 +71,29 @@ module Grably
       # rubocop:enable Security/Eval
     end
   end
+
+  class << self
+    # Determines if we can use colored output
+    def colorize_output?
+      case Grably::PLATFORM
+      when :linux, :mac
+        STDOUT.isatty
+      when :windows
+        # Sinse Windows 10 (Threshold 2 Update, Nov 2015) command line supports
+        # ANSI color escape codes. Trying to determine if we can use this feature
+        require_relative 'kernel32'
+        Kernel32.ansi_colors?
+      else
+        false
+      end
+    end
+  end
 end
 
 # Grably specific String extensions
 class String
-  case Grably::PLATFORM
-  when :linux, :mac
-    if STDOUT.isatty
-      include Grably::ShellColors
-    else
-      include Grably::FakeColors
-    end
+  if Grably.colorize_output?
+    include Grably::ShellColors
   else
     include Grably::FakeColors
   end

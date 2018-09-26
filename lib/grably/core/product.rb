@@ -308,8 +308,24 @@ module Grably
       # Including helper classes
       # Utility logic extracted from Product class to keep it clean and concise
       class << self
+        # Expand expression according to ProductExpand rules
+        # @param expr [Object] any expandable product expression
+        # @param task [Symbol|Rake::Task] context task to expand expression
+        # @param opts [Hash] additional options
+        # @return [Array<Product>] flat list of expanded products
         def expand(expr, task = nil, opts = {})
           Grably::Core::ProductExpand.expand(expr, task, opts)
+        end
+
+        # Wrap expand expression with command wich adds provided meta to each
+        # resulting product.
+        # Note: this actualy not expands expression. Just wraps with another
+        #       expression.
+        # @param expr [Object] any expandable product expression
+        # @param meta [Hash] hash of meta values
+        # @return [Hash] product expand expression
+        def with_meta(expr, meta = {})
+          expand(expr).map { |p| p.update(meta) }
         end
       end
     end

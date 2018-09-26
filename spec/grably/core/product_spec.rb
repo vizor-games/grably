@@ -139,6 +139,22 @@ module Grably
         end
       end
 
+      describe '::with_meta' do
+        let(:product) { Product.new('a.cpp') }
+        it 'adds values to product meta' do
+          expect(Product.with_meta(product, foo: 42))
+            .to match_array([product.update(foo: 42)])
+        end
+
+        context 'when product has meta values' do
+          let(:product) { Product.new('a.cpp', 'a.cpp', foo: 42) }
+          it 'merges two hashes' do
+            expect(Product.with_meta(product, bar: 1))
+              .to match_array([product.update(foo: 42)])
+          end
+        end
+      end
+
       describe '#eql?' do
         context 'when two products have same src and dst but different meta' do
           let(:a) { Product.new('foo.txt', 'foo.txt', foo: 'bar') }

@@ -14,5 +14,3 @@ require_relative 'core/application'
 require_relative 'core/commands'
 require_relative 'core/module'
 require_relative 'core/dsl'
-
-require_relative 'core/win_paths' if Grably.windows? && !Grably.jruby?

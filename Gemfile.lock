@@ -26,7 +26,6 @@ GEM
     hashdiff (0.3.7)
     jac (0.0.5)
     json (2.1.0)
-    json (2.1.0-java)
     parallel (1.12.1)
     parser (2.5.1.2)
       ast (~> 2.4.0)
@@ -75,7 +74,6 @@ GEM
     yard (0.9.16)
 
 PLATFORMS
-  java
   ruby
 
 DEPENDENCIES

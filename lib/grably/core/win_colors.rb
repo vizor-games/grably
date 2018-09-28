@@ -4,19 +4,19 @@ module WinColors # :nodoc:
   extend FFI::Library
   ffi_lib 'kernel32.dll'
 
-  class Coord < FFI::Struct
+  class Coord < FFI::Struct # :nodoc:
     layout :x, :short,
            :y, :short
   end
 
-  class SmallRect < FFI::Struct
+  class SmallRect < FFI::Struct # :nodoc:
     layout :left, :short,
            :top, :short,
            :right, :short,
            :bottom, :short
   end
 
-  class ConsoleScreenBufferInfo < FFI::Struct
+  class ConsoleScreenBufferInfo < FFI::Struct # :nodoc:
     layout :size, Coord,
            :cursor_position, Coord,
            :attributes, :uint32,
@@ -24,12 +24,12 @@ module WinColors # :nodoc:
            :max_window_size, Coord
   end
 
-  attach_function :GetConsoleMode, [:pointer, :pointer], :int
-  attach_function :SetConsoleMode, [:pointer, :uint64], :int
-  attach_function :GetStdHandle, [:uint64], :pointer
+  attach_function :GetConsoleMode, %i(pointer pointer), :int
+  attach_function :SetConsoleMode, %i(pointer uint64), :int
+  attach_function :GetStdHandle, %i(uint64), :pointer
   attach_function :GetLastError, [], :uint64
-  attach_function :SetConsoleTextAttribute, [:pointer, :uint64], :int
-  attach_function :GetConsoleScreenBufferInfo, [:pointer, :pointer], :int
+  attach_function :SetConsoleTextAttribute, %i(pointer uint64), :int
+  attach_function :GetConsoleScreenBufferInfo, %i(pointer pointer), :int
 
   # MSDN:
   #   The standard output device. Initially, this is the active console screen
@@ -50,14 +50,10 @@ module WinColors # :nodoc:
       end
 
       output_handle = GetStdHandle(STD_OUTPUT_HANDLE)
-      if get_console_mode(output_handle) < 32
-        $stdout = AnsiParser.new($stdout, output_handle, 1)
-      end
+      $stdout = AnsiParser.new($stdout, output_handle, 1) if get_console_mode(output_handle) < 32
 
       error_handle = GetStdHandle(STD_ERROR_HANDLE)
-      if get_console_mode(error_handle) < 32
-        $stderr = AnsiParser.new($stderr, error_handle, 2)
-      end
+      $stderr = AnsiParser.new($stderr, error_handle, 2) if get_console_mode(error_handle) < 32
     end
 
     def get_console_mode(handle)
@@ -67,10 +63,11 @@ module WinColors # :nodoc:
     end
   end
 
-  class AnsiParser < IO # :nodoc:
+  # :nodoc:
+  class AnsiParser < IO
     ANSI2WIN = [0, 4, 2, 6, 1, 5, 3, 7].freeze
 
-    def initialize(out, handle, fd)
+    def initialize(out, handle, fd) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       super(fd, 'w')
 
       @out = out
@@ -103,7 +100,7 @@ module WinColors # :nodoc:
       @concealed = false
     end
 
-    def putc(c)
+    def putc(c) # rubocop:disable Metrics/MethodLength
       c = c.ord
       if @buffer.empty?
         # match \e
@@ -118,7 +115,7 @@ module WinColors # :nodoc:
           # match m, J, L, M, @, P, A, B, C, D, E, F, G, H, f, s, u, U, K, X
         when 109, 74, 76, 77, 64, 80, 65, 66, 67, 68,
             69, 70, 71, 72, 102, 115, 117, 85, 75, 88
-          write(@buffer.pack("c*"))
+          write(@buffer.pack('c*'))
           @buffer.clear
         end
       end
@@ -128,13 +125,16 @@ module WinColors # :nodoc:
       s.each { |l| print_string(l) }
     end
 
+    # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
+    # rubocop:disable Metrics/MethodLength, Metrics/PerceivedComplexity
+    # rubocop:disable Metrics/BlockNesting, Metrics/BlockLength
     def print_string(s)
       s = s.to_s.dup
       until s.empty?
-        if s.sub!( /([^\e]*)?\e([\[\(])([0-9\;\=]*)([a-zA-Z@])(.*)/, '\5')
-          @out.write(concealed($1))
-          if $2 == '[' && $4 == 'm'
-            attrs = $3.split(';')
+        if s.sub!(/([^\e]*)?\e([\[\(])([0-9\;\=]*)([a-zA-Z@])(.*)/, '\5')
+          @out.write(concealed(Regexp.last_match(1)))
+          if Regexp.last_match(2) == '[' && Regexp.last_match(4) == 'm'
+            attrs = Regexp.last_match(3).split(';')
             attrs.push(nil) unless attrs
             attrs.each do |attr|
               atv = attr.to_i
@@ -168,12 +168,7 @@ module WinColors # :nodoc:
               end
             end
 
-            if @revideo
-              attrib = @background | (@foreground << 4)
-            else
-              attrib = @foreground | (@background << 4)
-            end
-
+            attrib = @revideo ? (@background | (@foreground << 4)) : (@foreground | (@background << 4))
             attrib |= 0x08 if @bold
             attrib |= 0x400 if @underline
 

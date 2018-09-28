@@ -74,7 +74,7 @@ module Grably # :nodoc:
 
   class << self
     # Determines if we can use colored output
-    def colorize_output?
+    def colorize_output? # rubocop:disable Metrics/MethodLength
       case Grably::PLATFORM
       when :linux, :mac
         STDOUT.isatty

@@ -67,7 +67,7 @@ module Grably # :nodoc:
         products.each do |p|
           s = File.stat(p.src)
           tar.add_file_simple(p.dst, s.mode, s.size) do |io|
-            io.write(File.open(p.src, 'rb').read)
+            io.write(IO.binread(p.src))
           end
         end
       end
@@ -98,7 +98,8 @@ module Grably # :nodoc:
               # FileUtils.chmod(entry.header.mode, dest, :verbose => false)
             end
           elsif entry.header.typeflag == '2' # Symlink!
-            File.symlink(entry.header.linkname, dest)
+            # No symlinks on windows...
+            # File.symlink(entry.header.linkname, dest)
             # else
             # raise "unknown tar entry: #{entry.full_name} type: #{entry.header.typeflag}"
           end

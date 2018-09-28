@@ -86,6 +86,7 @@ module Grably # :nodoc:
 
   %i(windows mac linux).each do |platform|
     eval("def #{platform}?; #{PLATFORM == platform} end") # rubocop:disable Security/Eval
+    module_function "#{platform}?".to_s
   end
 
   # Tells if we running with jruby interpreter

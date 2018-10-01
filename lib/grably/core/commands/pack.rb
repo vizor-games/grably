@@ -110,17 +110,21 @@ module Grably # :nodoc:
     end
 
     def unpack_zip(src, dst_dir) # rubocop:disable Metrics/MethodLength
-      File.open(src, 'rb') do |f|
-        Zip::File.open_buffer(f,
-                              restore_ownership: false,
-                              restore_permissions: false,
-                              restore_times: false) do |zip_file|
-          zip_file.each do |entry|
-            dst_file = File.join(dst_dir, entry.name)
-            FileUtils.mkdir_p(File.dirname(dst_file))
-            entry.extract(dst_file)
-          end
+      opts = {
+        restore_ownership: false,
+        restore_permissions: false,
+        restore_times: false
+      }
+      zip_file = Zip::File.new(src, false, false, opts)
+
+      begin
+        zip_file.each do |entry|
+          dst_file = File.join(dst_dir, entry.name)
+          FileUtils.mkdir_p(File.dirname(dst_file))
+          entry.extract(dst_file)
         end
+      ensure
+        zip_file.close
       end
     end
 

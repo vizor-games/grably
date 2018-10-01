@@ -99,7 +99,8 @@ module Grably # :nodoc:
         next unless lib.src.end_with?('.jar', '.zip')
 
         jar_path = File.expand_path(lib.src)
-        src_path = lib[:src].src
+        src_path = lib[:src]
+        src_path = src_path.src unless src_path.nil?
         src_path = File.expand_path(src_path) unless src_path.nil?
 
         jar_path = Pathname.new(jar_path).relative_path_from(Pathname.new(cur_path)).to_s

@@ -79,6 +79,7 @@ PLATFORMS
 DEPENDENCIES
   fakefs (= 0.10.0)
   grably!
+  rake
   rspec (= 3.5.0)
   rubocop (~> 0.50.0)
   simplecov (= 0.15.1)

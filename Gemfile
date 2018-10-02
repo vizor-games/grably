@@ -1,5 +1,6 @@
 source 'https://rubygems.org'
 
+gem 'rake', platforms: %i(jruby)
 gemspec
 
 group :dev do

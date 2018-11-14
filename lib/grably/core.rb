@@ -2,6 +2,7 @@ require 'powerpack/string/strip_indent'
 
 require_relative '../ext/class'
 require_relative '../ext/dir'
+require_relative '../ext/file'
 
 require_relative 'core/essentials'
 require_relative 'core/digest'

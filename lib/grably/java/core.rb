@@ -43,7 +43,11 @@ module Grably
 
     def which_java
       log_msg "Detecting JDK's".yellow
-      jdk_home, java_target = WHICH_JAVA_CMD.run.split("\n")
+      which_values = WHICH_JAVA_CMD.run
+      # When JavaHome app returns its values lines from stdout are prefixed with
+      # markers. This allows us to distinguish our output from other.
+      jdk_home = which_values[/^java.home:(.+)$/, 1]
+      java_target = which_values[/^java.specification.version:(.+)$/, 1]
 
       jdk_home = File.expand_path(jdk_home)
       jdk_home = check_jdk_home(jdk_home) unless File.exist?(File.join(jdk_home, 'bin', javac))

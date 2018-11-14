@@ -99,8 +99,7 @@ module Grably
         it 'should expand hash with proc as filter' do
           products = [Product.new('src/foo.json'), Product.new('src/bar.txt')]
           # Update meta with file extension
-          update_meta = ->(p) { p.update(ext: File.basename(p.dst).split('.').last) }
-          expanded = Product.expand(products => ->(o, _expand) { o.map(&update_meta) })
+          expanded = Product.expand(products => ->(s, d, m) { [s, d, m.merge(ext: File.basename(d).split('.').last)] })
           expect(expanded.map { |p| p[:ext] }).to eq(%w(json txt))
         end
 
@@ -142,14 +141,14 @@ module Grably
       describe '::with_meta' do
         let(:product) { Product.new('a.cpp') }
         it 'adds values to product meta' do
-          expect(Product.with_meta(product, foo: 42))
+          expect(Product.with_meta!(product, foo: 42))
             .to match_array([product.update(foo: 42)])
         end
 
         context 'when product has meta values' do
           let(:product) { Product.new('a.cpp', 'a.cpp', foo: 42) }
           it 'merges two hashes' do
-            expect(Product.with_meta(product, bar: 1))
+            expect(Product.with_meta!(product, bar: 1))
               .to match_array([product.update(foo: 42)])
           end
         end

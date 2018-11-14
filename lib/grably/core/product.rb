@@ -40,9 +40,10 @@ module Grably
       def generate_string_filter(filter_string)
         new_base, old_base, glob = parse_string_filter(filter_string)
         glob_filter = generate_glob_filter(glob)
-        lambda do |products, _expand|
-          filtered = filter_products(products, new_base, old_base) { |_src, dst, _meta| glob_filter.call(dst) }
-          filtered.map { |src, dst, meta| Product.new(src, dst, meta) }
+        lambda do |src, dst, meta|
+          if (new_dst = filter_product_by_dst(dst, new_base, old_base, &glob_filter))
+            [src, new_dst, meta]
+          end
         end
       end
 
@@ -54,13 +55,11 @@ module Grably
         parsed_filter || raise('Filter \'%s\' doesn\'t match format'.format(filter_string))
       end
 
-      def filter_products(products, new_base, old_base, &dst_filter)
-        products
-          .map { |p| [p.src, p.dst, p.meta] }
-          .select { |_, dst, _| !old_base || File.fnmatch("#{old_base}/**/*", dst, GLOB_MATCH_MODE) }
-          .map { |src, dst, meta| [src, dst.gsub(%r{^#{old_base.to_s}[/\\]}, ''), meta] }
-          .select(&dst_filter)
-          .map { |src, dst, meta| [src, new_base.nil? ? dst : File.join(new_base, dst), meta] }
+      def filter_product_by_dst(dst, new_base, old_base)
+        return unless File.fnmatch(File.join_safe(old_base, '**/*'), dst, GLOB_MATCH_MODE)
+        dst = dst.gsub(%r{^#{old_base.to_s}[/\\]}, '')
+        return unless yield(dst)
+        File.join_safe(new_base, dst)
       end
     end
 
@@ -140,8 +139,12 @@ module Grably
             # If got string generate lambda representing filter operation
             filter = generate_string_filter(filter) if filter.is_a? String
             raise 'Filter is not a proc %s'.format(filter) unless filter.is_a?(Proc)
-            filter.call(typed_expand(expr, task, opts), ->(o) { expand(o, task) })
-          end
+            expand_with_filter(expr, filter, task, opts)
+          end.compact
+        end
+
+        def expand_with_filter(expr, filter, task, opts)
+          expand(expr, task, opts).map { |p| p.map(&filter) }
         end
 
         def expand_array(elements, task, opts)
@@ -157,10 +160,6 @@ module Grably
           end
           # Will expand recursively over directory content.
           File.directory?(path) ? expand_dir(expr, base) : Product.new(path)
-        end
-
-        def expand_proc(proc, task, opts)
-          proc.call(->(o) { expand(o, task, opts) })
         end
 
         def expand_task(target_task, context_task, _opts)
@@ -196,7 +195,6 @@ module Grably
             Hash => :expand_hash,
             Array => :expand_array,
             String => :expand_string,
-            Proc => :expand_proc,
             Grably::Core::Task => :expand_task,
             Product => :expand_product,
             NilClass => :expand_nil
@@ -277,7 +275,9 @@ module Grably
       end
 
       def map
-        src, dst, meta = yield(@src, @dst, @meta)
+        prod = yield(@src, @dst, @meta)
+        return if prod.nil?
+        src, dst, meta = prod
         Product.new(src || @src, dst || @dst, meta || @meta)
       end
 
@@ -325,7 +325,11 @@ module Grably
         # @param meta [Hash] hash of meta values
         # @return [Hash] product expand expression
         def with_meta(expr, meta = {})
-          expand(expr).map { |p| p.update(meta) }
+          { expr => ->(s, d, m) { [s, d, m.merge(meta)] } }
+        end
+
+        def with_meta!(expr, meta = {})
+          expand(with_meta(expr, meta))
         end
       end
     end

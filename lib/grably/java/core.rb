@@ -93,6 +93,19 @@ module Grably
       cmd
     end
 
+    def java_version
+      case JAVA_TARGET
+      when '1.6'
+        6
+      when '1.7'
+        7
+      when '1.8'
+        8
+      else
+        return JAVA_TARGET.to_i
+      end
+    end
+
     def java_classpath(srcs)
       [srcs].flatten.compact.map { |s| s.is_a?(Product) ? s.src : s }.join(File::PATH_SEPARATOR)
     end

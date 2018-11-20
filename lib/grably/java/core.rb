@@ -106,7 +106,7 @@ module Grably
       when '1.8'
         8
       else
-        return JAVA_TARGET.to_i
+        JAVA_TARGET.to_i
       end
     end
 

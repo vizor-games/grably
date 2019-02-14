@@ -1,0 +1,52 @@
+desc: 'JUnit 5 with javadoc and sources'
+javadoc: true
+sources: true
+targets:
+  - org.junit.jupiter:junit-jupiter-api:5.3.1
+  - org.junit.jupiter:junit-jupiter-params:5.3.1
+  - org.junit.jupiter:junit-jupiter-engine:5.3.1
+sums:
+  - sha1: 3ef5276905e36f4d8055fe3cb0bdcc7503ffc85d
+    file: apiguardian-api-1.0.0.jar
+  - sha1: c00d4b62d6f43f718cedf8e3fd9594faf97d922e
+    file: apiguardian-api-1.0.0-javadoc.jar
+  - sha1: 777508fa9f3e03cafb3c1fb2eba3dca317f4b1ee
+    file: apiguardian-api-1.0.0-sources.jar
+  - sha1: a7e97eac2784395cb991403f9641b042ad972941
+    file: junit-jupiter-api-5.3.1.jar
+  - sha1: 0e681a5388fc994ac6723cd47d39a56434b83033
+    file: junit-jupiter-api-5.3.1-javadoc.jar
+  - sha1: b03f607c0822a283c972e37eaeacb00dc3a3c2e7
+    file: junit-jupiter-api-5.3.1-sources.jar
+  - sha1: e2676b1786c57a80eb98f5bebd51a3d05e228c40
+    file: junit-jupiter-engine-5.3.1.jar
+  - sha1: c76435286a702682beac767ce5148d8ee59df8b7
+    file: junit-jupiter-engine-5.3.1-javadoc.jar
+  - sha1: c769957170b2240854d6da6c6706dcc2a281542f
+    file: junit-jupiter-engine-5.3.1-sources.jar
+  - sha1: 9dfac3fbd6768974fc0c142304a3e90ba713b2a8
+    file: junit-jupiter-params-5.3.1.jar
+  - sha1: beef0caad29594979fe211dc52fae71d8c1fab4f
+    file: junit-jupiter-params-5.3.1-javadoc.jar
+  - sha1: bc4eb2ef307286fcd45551d4da397518c2e15394
+    file: junit-jupiter-params-5.3.1-sources.jar
+  - sha1: 67b7edddfac1935e6e6d9b58d7c7df6db59b1d39
+    file: junit-platform-commons-1.3.1.jar
+  - sha1: 83f0d8fb39ae2cd73b028c572e9adeaa7c76cc74
+    file: junit-platform-commons-1.3.1-javadoc.jar
+  - sha1: 297bb35bca3d229c5e6edbffd22de7b5ad4cf430
+    file: junit-platform-commons-1.3.1-sources.jar
+  - sha1: 3ee68a06bbdab157dd260e2095c356481d6cd172
+    file: junit-platform-engine-1.3.1.jar
+  - sha1: e5682faebd59746e647b23d20fd7a71c22698fb4
+    file: junit-platform-engine-1.3.1-javadoc.jar
+  - sha1: effe038ffcf21f6988e78b12119ca456d7d144fd
+    file: junit-platform-engine-1.3.1-sources.jar
+  - sha1: efd9f971e91074491ea55b19f67b13470cf4fcdd
+    file: opentest4j-1.1.1.jar
+  - sha1: cf0d297e58091e3ba5a33eee5e15ae6f268ebee1
+    file: opentest4j-1.1.1-javadoc.jar
+  - sha1: 88a3a2cb15c413565462cea99f201b67bc6d2f10
+    file: opentest4j-1.1.1-sources.jar
+
+

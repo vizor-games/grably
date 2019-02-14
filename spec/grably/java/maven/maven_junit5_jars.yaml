@@ -1,0 +1,18 @@
+---
+desc: JUnit 5
+sources: false
+javadoc: false
+targets:
+- org.junit.jupiter:junit-jupiter-api:5.3.1
+- org.junit.jupiter:junit-jupiter-params:5.3.1
+sums:
+- file: junit-jupiter-params-5.3.1.jar
+  sha1: 9dfac3fbd6768974fc0c142304a3e90ba713b2a8
+- file: apiguardian-api-1.0.0.jar
+  sha1: 3ef5276905e36f4d8055fe3cb0bdcc7503ffc85d
+- file: junit-platform-commons-1.3.1.jar
+  sha1: 67b7edddfac1935e6e6d9b58d7c7df6db59b1d39
+- file: junit-jupiter-api-5.3.1.jar
+  sha1: a7e97eac2784395cb991403f9641b042ad972941
+- file: opentest4j-1.1.1.jar
+  sha1: efd9f971e91074491ea55b19f67b13470cf4fcdd

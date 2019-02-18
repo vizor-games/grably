@@ -40,6 +40,11 @@ module Grably
             end
 
             WebMock.disable!
+            resolver.resolve
+            if ENV['MAVEN_DUMP']
+              dump_file = "deps-#{fixture['desc'].downcase.tr(' ', '-')}-#{Time.now.to_i}.yml"
+              resolver.dump(File.join('/tmp/', dump_file))
+            end
             resolver.fetch(@dir)
             WebMock.enable!
 

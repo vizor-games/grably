@@ -5,6 +5,54 @@ require 'yaml'
 module Grably
   # Utitities to work with maven repositories
   module Maven
+    # [WIP] Create array of tokens representing maven version.
+    # According to :
+    #  The Maven coordinate is split in tokens between dots ('.'), hyphens
+    #  ('-') and transitions between digits and characters. The separator is
+    #  recorded and will have effect on the order. A transition between digits
+    #   and characters is equivalent to hypen. Empty tokens are replaced with
+    #  "0". This gives a sequence of version numbers (numeric tokens) and
+    #  version qualifiers (non-numeric tokens) with "." or "-" prefixes.
+    class Version
+      def initialize(string)
+        @version = string
+                   .gsub(/([A-Za-z])([0-9])/, '\1-\2')
+                   .gsub(/([0-9])([A-Za-z])/, '\1-\2')
+                   .tr('._', '-')
+                   .downcase
+                   .split('-')
+                   .map { |p| p =~ /^\d+$/ ? p.to_i : p }
+      end
+
+      def to_a
+        @version.dup
+      end
+
+      def <=>(o)
+        @version
+          .zip(o.to_a)
+          .map { |x, y| cmp_parts(x, y) }
+          .find { |x| x != 0 } || 0
+      rescue StandardError => x
+        raise "#{@version.to_a.inspect} vs #{o.to_a.inspect}: #{x.message}"
+      end
+
+      private
+
+      def cmp_parts(x, y)
+        if !x && y
+          -1
+        elsif x && !y
+          1
+        elsif x.class == y.class
+          x <=> y
+        else
+          l = x.is_a?(String) ? 0 : 1
+          r = y.is_a?(String) ? 0 : 1
+          l <=> r
+        end
+      end
+    end
     # Common methods for working with maven repositories and metafiles
     module Commons
       # Read url content as String
@@ -223,6 +271,9 @@ module Grably
           { group: g, artifact: a, version: v || :latest }
         end
       end
+
+      include Commons
+
       # Predefined repository names
       REPOSITORIES = {
         central: 'https://repo.maven.apache.org/maven2',
@@ -266,8 +317,13 @@ module Grably
         @resolved = @targets.map do |target|
           resolve_target(target)
         end
-        IO.write("/tmp/deps-#{Time.now.to_i}.yml", YAML.dump(@resolved))
-        @resolved
+      end
+
+      def dump(file)
+        File.open(file, 'w') do |f|
+          obj = JSON.parse(@resolved.to_json)
+          f.write(YAML.dump(obj))
+        end
       end
 
       # Walk through graph and mark some targets for downloading then download
@@ -358,7 +414,7 @@ module Grably
             versions = metadata.elements
                                .to_a('/metadata/versioning/versions/*')
                                .map(&:text)
-            version = versions.max
+            version = versions.max_by { |v|  Version.new(v) }
             warn "Wildcard version #{group}:#{artifact}. Will use #{version}"
           elsif version =~ /\$\{.+\}/
             raise "Can't handle template verions: #{version}"

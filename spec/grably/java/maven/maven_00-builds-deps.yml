@@ -1,0 +1,70 @@
+---
+desc: builds-deps
+sources: 
+javadoc: 
+targets:
+- com.google.guava:guava:21.0
+- ch.qos.logback:logback-classic:1.1.3
+- ch.qos.logback:logback-core:1.1.3
+- org.slf4j:slf4j-api:1.7.25
+- io.github.lukehutch:fast-classpath-scanner:1.2
+- org.reflections:reflections:0.9.11
+- com.fasterxml.jackson.core:jackson-databind:2.9.8
+- cglib:cglib:3.2.10
+- org.ow2.asm:asm:6.2
+- com.squareup:javapoet:1.11.1
+- commons-lang:commons-lang:2.6
+- commons-cli:commons-cli:1.4
+- com.opencsv:opencsv:4.5
+- com.github.javaparser:javaparser-core:3.0.1
+sums:
+- file: commons-collections4-4.2.jar
+  sha1: 54ebea0a5b653d3c680131e73fe807bb8f78c4ed
+- file: jackson-core-2.9.8.jar
+  sha1: 0f5a654e4675769c716e5b387830d19b501ca191
+- file: fast-classpath-scanner-1.2.jar
+  sha1: 6ce67bdf249a66797cf08ec463a2fa4377b68737
+- file: opencsv-4.5.jar
+  sha1: 8789d5e9078ffa0027098535e52344685f34096c
+- file: reflections-0.9.11.jar
+  sha1: 4c686033d918ec1727e329b7222fcb020152e32b
+- file: javaparser-core-3.0.1.jar
+  sha1: 49c49fe9c0d1d21e4777bef6788a92ef15d2a241
+- file: commons-logging-1.2.jar
+  sha1: 4bfc12adfe4842bf07b657f0369c4cb522955686
+- file: slf4j-api-1.7.25.jar
+  sha1: da76ca59f6a57ee3102f8f9bd9cee742973efa8a
+- file: commons-collections-3.2.2.jar
+  sha1: 8ad72fe39fa8c91eaaf12aadb21e0c3661fe26d5
+- file: cglib-3.2.10.jar
+  sha1: 24af53869d7f1de2a0d2cd3d59c35386ea5a2b1a
+- file: jackson-annotations-2.9.0.jar
+  sha1: 07c10d545325e3a6e72e06381afe469fd40eb701
+- file: asm-6.2.jar
+  sha1: 1b6c4ff09ce03f3052429139c2a68e295cae6604
+- file: ant-1.10.3.jar
+  sha1: 88becdeb77cdd2457757b7268e1a10666c03d382
+- file: commons-lang3-3.8.1.jar
+  sha1: 6505a72a097d9270f7a9e7bf42c4238283247755
+- file: ant-launcher-1.10.3.jar
+  sha1: 9dd5189e7f561ca19833b4e3672720b9bc5cb2fe
+- file: javassist-3.21.0-GA.jar
+  sha1: 598244f595db5c5fb713731eddbb1c91a58d959b
+- file: logback-classic-1.1.3.jar
+  sha1: d90276fff414f06cb375f2057f6778cd63c6082f
+- file: jackson-databind-2.9.8.jar
+  sha1: 11283f21cc480aa86c4df7a0a3243ec508372ed2
+- file: commons-lang-2.6.jar
+  sha1: 0ce1edb914c94ebc388f086c6827e8bdeec71ac2
+- file: commons-beanutils-1.9.3.jar
+  sha1: c845703de334ddc6b4b3cd26835458cb1cba1f3d
+- file: logback-core-1.1.3.jar
+  sha1: e3c02049f2dbbc764681b40094ecf0dcbc99b157
+- file: commons-text-1.3.jar
+  sha1: 9abf61708a66ab5e55f6169a200dbfc584b546d9
+- file: javapoet-1.11.1.jar
+  sha1: 210e69f58dfa76c5529a303913b4a30c2bfeb76b
+- file: commons-cli-1.4.jar
+  sha1: c51c00206bb913cd8612b24abd9fa98ae89719b1
+- file: guava-21.0.jar
+  sha1: 3a3d111be1be1b745edfa7d91678a12d7ed38709

@@ -35,11 +35,19 @@ POM_ERB = <<-POM.freeze
 </project>
 POM
 
-id = Dir['fixtures/*.yml'].size
-name = ENV['name']
-targets = ENV['targets'].split(',').map { |t| t.split(':') }
-sources = !ENV['s'].nil?
-javadoc = !ENV['j'].nil?
+if ARGV.first
+  config = YAML.load(IO.read(ARGV.first))
+  targets = config['targets'].map { |t| t.split(':') }
+  name = config['name']
+  sources = config['sources']
+  javadoc = config['javadoc']
+else
+  id = Dir['fixtures/*.yml'].size
+  name = ENV['name']
+  targets = ENV['targets'].split(',').map { |t| t.split(':') }
+  sources = !ENV['s'].nil?
+  javadoc = !ENV['j'].nil?
+end
 
 sums = Dir.mktmpdir do |tmp|
   Dir.chdir(tmp) do

@@ -414,7 +414,7 @@ module Grably
             versions = metadata.elements
                                .to_a('/metadata/versioning/versions/*')
                                .map(&:text)
-            version = versions.max_by { |v|  Version.new(v) }
+            version = versions.max_by { |v| Version.new(v) }
             warn "Wildcard version #{group}:#{artifact}. Will use #{version}"
           elsif version =~ /\$\{.+\}/
             raise "Can't handle template verions: #{version}"

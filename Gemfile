@@ -1,6 +1,5 @@
 source 'https://rubygems.org'
 
-gem 'rake', platforms: %i(jruby)
 gemspec
 
 group :dev do
@@ -10,5 +9,5 @@ group :dev do
   gem 'simplecov', '0.15.1'
   gem 'test-unit'
   gem 'webmock'
-  gem 'yard', '~> 0.9.5'
+  gem 'yard', '>= 0.9.20'
 end

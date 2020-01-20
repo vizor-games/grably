@@ -51,7 +51,8 @@ module Grably # :nodoc:
       cmd += ['-i', ssh_key] if ssh_key
       cmd += ['-p', ssh_port] if ssh_port
       cmd =  ['sshpass', '-p', ssh_pass] + cmd if ssh_pass
-      "'#{cmd.join(' ')}'"
+
+      cmd
     end
 
     def unpack_dst_hash(dst)
@@ -70,7 +71,7 @@ module Grably # :nodoc:
       end
 
       log_msg "Syncing #{files.size} files to #{host}"
-      ['rsync', *rsync_params, @dst, '-e', ssh_cmd, host].run_log
+      ['rsync', *rsync_params, '-e', ssh_cmd, @dst, host].run_log
     end
 
     def rsync_params

@@ -16,6 +16,7 @@ module Grably # :nodoc:
     opt :ssh_key
     opt :ssh_pass
     opt :ssh_port
+    opt :ssh_config
 
     def setup(srcs, dst = nil, _p = {})
       @files = srcs
@@ -46,6 +47,7 @@ module Grably # :nodoc:
 
     def ssh_cmd
       cmd = %w(ssh)
+      cmd += ['-F', ssh_config] if ssh_config
       cmd += ['-i', ssh_key] if ssh_key
       cmd += ['-p', ssh_port] if ssh_port
       cmd =  ['sshpass', '-p', ssh_pass] + cmd if ssh_pass
@@ -58,6 +60,7 @@ module Grably # :nodoc:
       @ssh_key = dst[:ssh_key]
       @ssh_pass = dst[:ssh_pass]
       @ssh_port = dst[:ssh_port]
+      @ssh_config = dst[:ssh_config]
       @dst = dst[:host]
     end
 

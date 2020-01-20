@@ -52,7 +52,7 @@ module Grably # :nodoc:
       cmd += ['-p', ssh_port] if ssh_port
       cmd =  ['sshpass', '-p', ssh_pass] + cmd if ssh_pass
 
-      cmd
+      cmd.join(' ')
     end
 
     def unpack_dst_hash(dst)

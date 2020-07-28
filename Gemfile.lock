@@ -25,7 +25,7 @@ GEM
     ffi (1.11.1)
     hashdiff (0.3.7)
     jac (0.0.5)
-    json (2.1.0)
+    json (2.3.1)
     parallel (1.12.1)
     parser (2.5.1.2)
       ast (~> 2.4.0)
